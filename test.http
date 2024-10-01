@@ -1,0 +1,20 @@
+### Create User
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "username": "testuser1",
+  "password": "password1123",
+  "name": "TestUser1"
+}
+
+### Get User
+GET http://localhost:3000/users/1
+
+### Update User
+PUT http://localhost:3000/users/1
+Content-Type: application/json
+
+{
+  "name": "TestUser12"
+}
