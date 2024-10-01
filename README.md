@@ -1,5 +1,12 @@
 # expressjs-mvc
 
+## Cách chạy chương trình
+
+-   Phải cài đặt trước và kết nối được mysql, nodejs, npm
+-   tạo 1 database trong mysql, bỏ các username, password,.. trong file .env
+-   `npm i`
+-   `node ./bin/www`
+
 ## Cấu trúc folder
 
 Tuân theo cấu trúc Model - View - Controller, trong đó View thuộc về phía frontend, backend chỉ quan tâm model và controller
