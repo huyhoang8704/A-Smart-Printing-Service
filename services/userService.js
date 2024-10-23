@@ -1,3 +1,4 @@
+// LEGACY
 const User = require("../models/User");
 
 class UserService {
