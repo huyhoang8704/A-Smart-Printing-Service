@@ -20,6 +20,7 @@ const { SPSO } = require("../models/SPSO");
 const { Student } = require("../models/Student");
 const { File } = require("../models/File");
 require("../models/associations")
+require("dotenv").config()
 
 /**
  * Get port from environment and store in Express.
