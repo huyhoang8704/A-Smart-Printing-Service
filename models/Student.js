@@ -1,8 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/mysql.database");
 
-const Student = sequelize.define(
-    "Student",
+const Student = sequelize.define("Student",
     {
         username: {
             primaryKey: true,
