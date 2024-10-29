@@ -8,12 +8,16 @@ const PaperBoughtHistory = sequelize.define(
             type: DataTypes.STRING(36),
             primaryKey: true
         },
-        studenUserName: {
+        studentUserName: {
             type: DataTypes.STRING,
             allowNull: false,
         },
         noOfPage: {
             type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        totalBill: {
+            type: DataTypes.DOUBLE,
             allowNull: false,
         }
     },
@@ -21,5 +25,6 @@ const PaperBoughtHistory = sequelize.define(
         tableName: "PaperBoughtHistories",
     }
 )
+// PaperBoughtHistory.sync({alter: true})
 
 module.exports = {PaperBoughtHistory}

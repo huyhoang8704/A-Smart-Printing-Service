@@ -28,10 +28,14 @@ const Printer = sequelize.define(
         type: {
             type: DataTypes.ENUM("black", "color"),
             allowNull: false,
+            validate: {
+                isIn: [['black', 'color']]
+            }
         },
         status: {
             type: DataTypes.ENUM("disabled", "available", "running"),
-            defaultValue: "available"
+            defaultValue: "available",
+      
         },
     },
     {
@@ -39,4 +43,5 @@ const Printer = sequelize.define(
         tableName: "Printers",
     }
 );
+
 module.exports = { Printer };

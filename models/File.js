@@ -15,6 +15,10 @@ const File = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false
         },
+        noOfPages: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
         studentUserName: {
             type: DataTypes.STRING,
             allowNull: false
@@ -25,5 +29,6 @@ const File = sequelize.define(
         tableName: "Files"
     }
 )
+
 
 module.exports = {File}
