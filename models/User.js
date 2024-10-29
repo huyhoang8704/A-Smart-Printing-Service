@@ -31,7 +31,7 @@ const User = sequelize.define('User',{
     },
     token : {
         type : DataTypes.STRING,
-        allowNull : false
+        allowNull : true
     },
     deleted : {
         type : DataTypes.BOOLEAN,

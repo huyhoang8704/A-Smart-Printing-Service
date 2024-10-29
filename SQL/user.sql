@@ -1,0 +1,21 @@
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullname VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    numberPage INT,
+    role ENUM('student', 'lecturer') NOT NULL DEFAULT 'student',
+    token VARCHAR(255),
+    deleted BOOLEAN DEFAULT FALSE,
+    createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+INSERT INTO users (fullname, username, password, numberPage, role)
+VALUES 
+    ('Nguyen Van A', 'nguyenvana', 'password123', 10, 'student'),
+    ('Le Thi B', 'lethib', 'password456', 20, 'lecturer'),
+    ('Tran Van C', 'tranvanc', 'password789', 15, 'student'),
+    ('Pham Thi D', 'phamthid', 'password101', NULL, 'lecturer'),
+    ('Do Van E', 'dovane', 'password202', 25, 'student');
