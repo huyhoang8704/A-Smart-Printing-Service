@@ -15,6 +15,25 @@ const sequelize = new Sequelize(MYSQL_DATABASE, MYSQL_USERNAME, MYSQL_PASSWORD, 
     host: MYSQL_HOST,
     port: MYSQL_PORT,
     dialect: "mysql",
+    dialectOptions: {
+        connectTimeout: 60000, // thời gian chờ kết nối là 60 giây
+    },
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 60000,
+        idle: 10000
+    },
 });
+
+
+// Alert when connection is established
+sequelize.authenticate()
+    .then(() => {
+        console.log('Connect Mysql successfully!');
+    }) 
+    .catch(err => {
+        console.error('Connect Error!', err);
+    });
 
 module.exports = sequelize;
