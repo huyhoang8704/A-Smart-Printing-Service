@@ -1,18 +1,17 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../config/mysql.database";
+const DataTypes = require("sequelize")
+const sequelize = require("../config/mysql.database")
 
 const User = sequelize.define('User',{
-    id : {
-        type : DataTypes.INTEGER,
-        autoIncrement : true, // Tự động tăng
-        allowNull : false,
-        primaryKey : true
-    },
-    fullname: {
+    id: {
+        type: DataTypes.STRING(16),
+        allowNull: false,
+        primaryKey: true
+      },
+    fullName: {
         type : DataTypes.STRING,
         allowNull : false
     }, 
-    username :{
+    email :{
         type : DataTypes.STRING,
         allowNull : false,
         unique : true
@@ -43,4 +42,4 @@ const User = sequelize.define('User',{
     timestamps : true // createdAt, updatedAt
 })
 
-export default User
+module.exports = User
