@@ -30,11 +30,25 @@ const register = async (req, res) => {
         });
 
         // Create JWT token
-        const token = jwt.sign({ id: newUser.id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '24h' });
+        const token = jwt.sign(
+            { 
+                id: newUser.id,
+                fullName: newUser.fullName,
+            }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '24h' }
+        );
 
         // Save MySQL
         newUser.token = token;
         await newUser.save();
+
+        // Set cookie
+        res.cookie("token", token, {
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true,  
+            secure: true     
+        });
 
         res.status(201).json({
             message: 'Đăng ký thành công!',
