@@ -108,9 +108,30 @@ const login = async (req, res) => {
         res.status(500).json({ message: 'Có lỗi xảy ra.', error: error.message });
     }
 };
+const getUser = async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        const user = await User.findByPk(userId, {
+            attributes: ['id', 'fullName', 'email', 'role'] // Chỉ lấy các trường cần thiết
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'Người dùng không tồn tại.' });
+        }
+
+        res.status(200).json({
+            message: 'Lấy thông tin người dùng thành công!',
+            user
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Có lỗi xảy ra.', error: error.message });
+    }
+};
 
 
 module.exports = {
     register,
     login,
+    getUser,
 }
