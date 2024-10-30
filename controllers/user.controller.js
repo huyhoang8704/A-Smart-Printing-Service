@@ -128,10 +128,15 @@ const getUser = async (req, res) => {
         res.status(500).json({ message: 'Có lỗi xảy ra.', error: error.message });
     }
 };
+const logout = (req, res) => {
+    res.clearCookie('token'); 
+    res.status(200).json({ message: 'Đăng xuất thành công!' });
+};
 
 
 module.exports = {
     register,
     login,
     getUser,
+    logout,
 }
