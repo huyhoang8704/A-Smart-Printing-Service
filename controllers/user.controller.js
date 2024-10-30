@@ -64,9 +64,53 @@ const register = async (req, res) => {
         res.status(500).json({ message: 'Có lỗi xảy ra.', error: error.message });
     }
 };
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ where: { email } });
+        // Check Email
+        if (!user) {
+            return res.status(400).json({ message: 'Email đăng nhập không chính xác.' });
+        }
+        // Check Password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: 'Sai mật khẩu.' });
+        }
+        // Create JWT token
+        const token = jwt.sign(
+            { 
+                id: user.id,
+                fullName: user.fullName,
+            }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '24h' }
+        );
+        // Set cookie
+        res.cookie("token", token, {
+            maxAge: 24 * 60 * 60 * 1000,
+            httpOnly: true,  
+            secure: true     
+        });
 
+
+        res.status(200).json({
+            message: 'Đăng nhập thành công!',
+            user: {
+                id: user.id,
+                fullName: user.fullName,
+                email: user.email,
+                role: user.role,
+            },
+            token
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Có lỗi xảy ra.', error: error.message });
+    }
+};
 
 
 module.exports = {
     register,
+    login,
 }
