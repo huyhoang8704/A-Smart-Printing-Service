@@ -36,7 +36,7 @@ const register = async (req, res) => {
                 fullName: newUser.fullName,
             }, 
             process.env.JWT_SECRET, 
-            { expiresIn: '24h' }
+            { expiresIn: '1d' }
         );
 
         // Save MySQL
@@ -84,7 +84,7 @@ const login = async (req, res) => {
                 fullName: user.fullName,
             }, 
             process.env.JWT_SECRET, 
-            { expiresIn: '24h' }
+            { expiresIn: '1d' }
         );
         // Set cookie
         res.cookie("token", token, {
