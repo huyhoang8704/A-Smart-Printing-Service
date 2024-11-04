@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id VARCHAR(16) Primary Key,
     fullname VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
