@@ -1,25 +1,35 @@
-const Log = require("../models/Log");
+const PrintingLog  = require("../models/PrintingLog");
 
 class LogService {
-    async createLog(studentID, printerID, filename, startPrintTime, endPrintTime, numberOfPages) {
+    async createLog(studentUserName, printerId, fileId, startTime, finishTime, a4Quantity, a3Quantity, noOfCopies) {
         console.log("Creating log");
-        return await Log.create({ studentID, printerID, filename, startPrintTime, endPrintTime, numberOfPages });
+        return await PrintingLog.create({
+            studentUserName,
+            printerId,
+            fileId,
+            startTime,
+            finishTime,
+            a4Quantity,
+            a3Quantity,
+            noOfCopies
+        });
     }
 
     async getLogById(id) {
-        return await Log.findByPk(id);
+        return await PrintingLog.findByPk(id);
     }
  
-    async getLogByStudentId(studentID) {
-        return await Log.findOne({
+    async getLogByStudentUserName(studentUserName) {
+        console.log("getLogByStudentUserName log for student:", studentUserName);
+        return await PrintingLog.findAll({
             where: {
-                studentID: studentID,
+                studentUserName: studentUserName,
             },
         });
     }
 
     async updateLog(id, updates) {
-        const log = await Log.findByPk(id);
+        const log = await PrintingLog.findByPk(id);
         if (!log) {
             throw new Error("Log not found");
         }

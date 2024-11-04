@@ -1,28 +1,27 @@
 const logService = require("../services/logService");
-const Log = require("../models/Log");
+const Log = require("../models/PrintingLog");
+const { v4: uuidv4 } = require('uuid');
 class LogController {
     async createLog(req, res) {
-        const { studentID, printerID, filename, numberOfPages } = req.body;
+        const { studentUserName, printerId, fileId, noOfCopies, a3Quantity, a4Quantity} = req.body;
         try {
             // Lấy thời gian hiện tại
             const now = new Date();
             const startPrintTime = now.toISOString();  // Thời gian bắt đầu in
-            const createdAt = now.toISOString();  // Thời gian tạo bản ghi
-            
             // Cộng thêm 20 phút vào thời gian hiện tại để tính thời gian kết thúc in
             const endPrintTime = new Date(now.getTime() + 20 * 60000).toISOString();  // 20 phút = 20 * 60 * 1000 ms
-            const updatedAt = endPrintTime;  // Thời gian cập nhật
             
             // Tạo log mới với các giá trị trên
             const newLog = Log.build({
-                studentID,
-                printerID,
-                filename,
-                startPrintTime,
-                endPrintTime,
-                numberOfPages,
-                createdAt,
-                updatedAt
+                id: uuidv4(),
+                startTime: startPrintTime,
+                finishTime: endPrintTime,
+                a4Quantity,
+                a3Quantity,
+                noOfCopies,
+                fileId,
+                printerId,
+                studentUserName
             });
             await newLog.save();
             res.status(201).json(newLog);
@@ -34,45 +33,48 @@ class LogController {
 
     async getLog(req, res) {
         try {
-            console.log("Fetching log for studentID:", req.params.studentID);
-            const log = await logService.getLogByStudentId(req.params.studentID);
-            console.log("Log found:", log);
-            if (log) {
-                const formattedLog = {
-                    ...log.toJSON(),
-                    startPrintDate: log.startPrintTime.toISOString().split('T')[0],
-                    startPrintTime: log.startPrintTime.toISOString().split('T')[1].split('.')[0],
-                    endPrintDate: log.endPrintTime.toISOString().split('T')[0],
-                    endPrintTime: log.endPrintTime.toISOString().split('T')[1].split('.')[0],
-                };
-                res.status(200).json(formattedLog);
+            console.log("Fetching logs for studentID:", req.params.studentUserName);
+            
+            // Lấy danh sách log theo studentUserName
+            const logs = await logService.getLogByStudentUserName(req.params.studentUserName);
+            console.log("Logs found:", logs);
+    
+            if (logs && logs.length > 0) {
+                // Định dạng từng log và chuyển đổi thành JSON
+                const formattedLogs = logs.map(log => {
+                    return {
+                        ...log.toJSON(),
+                        startPrintDate: log.startTime.toISOString().split('T')[0],
+                        startPrintTime: log.startTime.toISOString().split('T')[1].split('.')[0],
+                        endPrintDate: log.finishTime ? log.finishTime.toISOString().split('T')[0] : null,
+                        endPrintTime: log.finishTime ? log.finishTime.toISOString().split('T')[1].split('.')[0] : null,
+                    };
+                });
+                res.status(200).json(formattedLogs);
             } else {
-                res.status(404).json({ error: "Log not found" });
+                res.status(404).json({ error: "Logs not found" });
             }
         } catch (error) {
-            console.error("Error fetching log:", error);
+            console.error("Error fetching logs:", error);
             res.status(500).json({ error: error.message });
         }
     }
     
 
     async updateLog(req, res) {
-        const { studentID } = req.params;
+        const { id } = req.params;
         const updates = req.body;
 
         try {
-            const updatedLog = await logService.updateLog(studentID, updates);
+            const updatedLog = await logService.updateLog(id, updates);
             res.status(200).json(updatedLog);
         } catch (error) {
-            // Log the error details
             console.error("Update error:", error);
 
-            // Handle not found error
             if (error.message === "Log not found") {
                 return res.status(404).json({ error: error.message });
             }
 
-            // Handle other errors
             res.status(500).json({ error: error.message });
         }
     }
