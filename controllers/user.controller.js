@@ -86,6 +86,9 @@ const login = async (req, res) => {
             process.env.JWT_SECRET, 
             { expiresIn: '1d' }
         );
+        // Save JWT token
+        user.token = token;
+        await user.save();
         // Set cookie
         res.cookie("token", token, {
             maxAge: 24 * 60 * 60 * 1000,
