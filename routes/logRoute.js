@@ -4,6 +4,8 @@ const router = Router();
 
 router.post("/", logController.createLog);
 router.get("/:studentUserName", logController.getLog);
+router.get("/time/:studentUserName", logController.getLogsByTimeStudent);
+router.get("/allStudent/time", logController.getLogsByTime);
 router.put("/:studentUserName", logController.updateLog);
 
 // Add more routes as needed
