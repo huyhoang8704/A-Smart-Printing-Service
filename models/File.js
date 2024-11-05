@@ -19,7 +19,7 @@ const File = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        studentUserName: {
+        userId: {
             type: DataTypes.STRING,
             allowNull: false
         }
@@ -30,5 +30,7 @@ const File = sequelize.define(
     }
 )
 
+
+// File.sync({alter: true})
 
 module.exports = {File}

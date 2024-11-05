@@ -8,7 +8,7 @@ const PaperBoughtHistory = sequelize.define(
             type: DataTypes.STRING(36),
             primaryKey: true
         },
-        studentUserName: {
+        userId: {
             type: DataTypes.STRING,
             allowNull: false,
         },

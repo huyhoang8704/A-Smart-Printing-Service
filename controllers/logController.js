@@ -3,7 +3,7 @@ const Log = require("../models/PrintingLog");
 const { v4: uuidv4 } = require('uuid');
 class LogController {
     async createLog(req, res) {
-        const { studentUserName, printerId, fileId, noOfCopies, a3Quantity, a4Quantity} = req.body;
+        const { userId, printerId, fileId, noOfCopies, a3Quantity, a4Quantity} = req.body;
         try {
             // Lấy thời gian hiện tại
             const now = new Date();
@@ -21,7 +21,7 @@ class LogController {
                 noOfCopies,
                 fileId,
                 printerId,
-                studentUserName
+                userId
             });
             await newLog.save();
             res.status(201).json(newLog);

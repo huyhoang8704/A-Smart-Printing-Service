@@ -3,10 +3,14 @@ const sequelize = require("../config/mysql.database")
 
 const User = sequelize.define('User',{
     id: {
-        type: DataTypes.STRING(16),
+        type: DataTypes.STRING(36),
         allowNull: false,
         primaryKey: true
       },
+    uniID: {
+        type: DataTypes.STRING(7),
+        allowNull: false,
+    },
     fullName: {
         type : DataTypes.STRING,
         allowNull : false
