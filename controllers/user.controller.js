@@ -9,7 +9,7 @@ dotenv.config();
 
 const register = async (req, res) => {
     try {
-        const { fullName, email, password, role } = req.body;
+        const { fullName, email, password, role, uniId } = req.body;
 
         // Check existing email
         const existingUser = await User.findOne({ where: { email } });
@@ -25,6 +25,7 @@ const register = async (req, res) => {
             id: uuidv4(), // Random ID
             fullName,
             email,
+            uniId,
             password: hashedPassword,
             role: role || 'student',
         });
@@ -57,6 +58,7 @@ const register = async (req, res) => {
                 fullName: newUser.fullName,
                 email: newUser.email,
                 role: newUser.role,
+                uniId: newUser.uniId
             },
             token
         });
@@ -104,6 +106,7 @@ const login = async (req, res) => {
                 fullName: user.fullName,
                 email: user.email,
                 role: user.role,
+                uniId: user.uniId,
             },
             token
         });

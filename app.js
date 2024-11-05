@@ -11,6 +11,7 @@ var systemConfigRouter = require("./routes/systemConfigRoute")
 var userRouter = require("./routes/userRoute");
 var systemConfigRouter = require("./routes/systemConfigRoute");
 const reportRouter = require("./routes/reportRoute");
+var logRoute = require("./routes/logRoute");
 var app = express();
 
 // view engine setup
@@ -29,6 +30,7 @@ app.use("/printers", printerRouter);
 app.use("/system-config", systemConfigRouter);
 app.use("/users", userRouter);
 app.use("/report", reportRouter);
+app.use("/logs", logRoute);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

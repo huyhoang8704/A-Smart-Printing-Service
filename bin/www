@@ -14,10 +14,8 @@ const { SystemConfig } = require("../models/SystemConfig");
 const { PermittedFileType } = require("../models/PermittedFileType");
 const { PaperBoughtHistory } = require("../models/PaperBoughtHistory");
 const { Printer } = require("../models/Printer");
-const { Report } = require("../models/Report");
 const { PrintingLog } = require("../models/PrintingLog");
 const { SPSO } = require("../models/SPSO");
-const { Student } = require("../models/Student");
 const { File } = require("../models/File");
 require("../models/associations")
 require("dotenv").config()

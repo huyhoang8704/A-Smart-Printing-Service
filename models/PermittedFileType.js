@@ -21,10 +21,12 @@ const PermittedFileType = sequelize.define(
     },
     {
         createdAt: false,
+        updatedAt: false,
         tableName: "PermittedFileTypes",
     }
 );
 
+// PermittedFileType.sync({alter: true})
 
 
 module.exports = { PermittedFileType };

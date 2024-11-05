@@ -3,10 +3,14 @@ const sequelize = require("../config/mysql.database")
 
 const User = sequelize.define('User',{
     id: {
-        type: DataTypes.STRING(16),
+        type: DataTypes.STRING(36),
         allowNull: false,
         primaryKey: true
       },
+    uniId: {
+        type: DataTypes.STRING(7),
+        allowNull: false,
+    },
     fullName: {
         type : DataTypes.STRING,
         allowNull : false
@@ -41,5 +45,7 @@ const User = sequelize.define('User',{
     tableName : 'users',
     timestamps : true // createdAt, updatedAt
 })
+
+// User.sync({force: true})
 
 module.exports = User

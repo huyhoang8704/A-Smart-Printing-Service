@@ -19,16 +19,18 @@ const File = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        studentUserName: {
+        userId: {
             type: DataTypes.STRING,
             allowNull: false
         }
     },
     {
-        createdAt: false,
+        updatedAt: false,
         tableName: "Files"
     }
 )
 
+
+// File.sync({alter: true})
 
 module.exports = {File}

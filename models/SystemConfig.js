@@ -9,13 +9,20 @@ const SystemConfig = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        year:
-        {
+        year: {
             type: DataTypes.STRING,
             allowNull: false,
         },
         quarter: {
             type: DataTypes.STRING,
+            allowNull: false,
+        },
+        startDate: {
+            type: DataTypes.DATE,
+            allowNull: false,
+        },
+        endDate: {
+            type: DataTypes.DATE,
             allowNull: false,
         },
         defaultNoPages: {
@@ -33,5 +40,6 @@ const SystemConfig = sequelize.define(
     }
 );
 
+// SystemConfig.sync({alter: true})
 
 module.exports = { SystemConfig };

@@ -35,10 +35,10 @@ const PrintingLog = sequelize.define(
             type: DataTypes.STRING(36),
             allowNull: false
         },
-        studentUserName: {
+        userId: {
             type: DataTypes.STRING,
             allowNull: false
-        }
+        }   
     },
     {
         createdAt: false,
@@ -46,6 +46,7 @@ const PrintingLog = sequelize.define(
     }
 )
 
+// PrintingLog.sync({force: true})
 // PrintingLog.sync({alter: true})
 
-module.exports = {PrintingLog}
+module.exports = PrintingLog
