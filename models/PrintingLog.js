@@ -47,5 +47,6 @@ const PrintingLog = sequelize.define(
 )
 
 // PrintingLog.sync({force: true})
+// PrintingLog.sync({alter: true})
 
 module.exports = PrintingLog

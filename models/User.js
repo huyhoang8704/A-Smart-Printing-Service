@@ -7,7 +7,7 @@ const User = sequelize.define('User',{
         allowNull: false,
         primaryKey: true
       },
-    uniID: {
+    uniId: {
         type: DataTypes.STRING(7),
         allowNull: false,
     },
@@ -45,5 +45,7 @@ const User = sequelize.define('User',{
     tableName : 'users',
     timestamps : true // createdAt, updatedAt
 })
+
+// User.sync({force: true})
 
 module.exports = User

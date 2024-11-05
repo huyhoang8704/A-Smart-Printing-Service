@@ -39,9 +39,12 @@ const Printer = sequelize.define(
         },
     },
     {
+        updatedAt: false,
         createdAt: false,
         tableName: "Printers",
     }
 );
+
+// Printer.sync({alter: true})
 
 module.exports = { Printer };

@@ -20,6 +20,7 @@ const PaperBoughtHistory = sequelize.define(
             type: DataTypes.DOUBLE,
             allowNull: false,
         }
+        // createdAt is default
     },
     {
         tableName: "PaperBoughtHistories",

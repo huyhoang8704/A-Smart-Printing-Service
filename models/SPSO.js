@@ -15,7 +15,8 @@ const SPSO = sequelize.define(
         password: {
             type: DataTypes.STRING,
             allowNull: false
-        },
+        }
+
     },
     {
         createdAt: false,

@@ -25,7 +25,7 @@ const File = sequelize.define(
         }
     },
     {
-        createdAt: false,
+        updatedAt: false,
         tableName: "Files"
     }
 )
