@@ -14,6 +14,7 @@ const reportRouter = require("./routes/reportRoute");
 var logRoute = require("./routes/logRoute");
 var printRouter = require("./routes/printRoute");
 var pageRouter = require("./routes/pageBoughtRoute")
+var SPSORouter = require("./routes/SPSO")
 var app = express();
 
 upload.single("file");
@@ -38,6 +39,7 @@ app.use("/report", reportRouter);
 app.use("/logs", logRoute);
 app.use("/print", printRouter);
 app.use("/page", pageRouter);
+app.use("/admin", SPSORouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

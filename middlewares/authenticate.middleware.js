@@ -4,10 +4,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware xác thực JWT từ cookie
 const authenticateToken = (req, res, next) => {
-    console.log("test");
 
     const token = req.cookies.token;
-    console.log(token);
 
     if (!token) {
         return res.status(401).json({ message: "Bạn cần đăng nhập để truy cập tài nguyên này." });

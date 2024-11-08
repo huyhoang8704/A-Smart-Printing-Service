@@ -4,9 +4,16 @@ const sequelize = require("../config/mysql.database");
 const SPSO = sequelize.define(
     "SPSO",
     {
+        // id: {
+        //     type: DataTypes.STRING(36),
+        //     allowNull: false,
+        //     primaryKey: true
+        // },
         username: {
-            primaryKey: true,
             type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+            primaryKey: true
         },
         name: {
             type: DataTypes.STRING,
@@ -29,4 +36,4 @@ const SPSO = sequelize.define(
 
 // SPSO.sync({alter: true})
 
-module.exports = { SPSO };
+module.exports = SPSO;
