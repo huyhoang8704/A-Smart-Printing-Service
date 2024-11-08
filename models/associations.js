@@ -1,6 +1,8 @@
 console.log("asssociation");
 
 const { PermittedFileType } = require("./PermittedFileType");
+const PrintingLog = require("./PrintingLog");
+const { SelectedPrintPage } = require("./SelectedPrintPage");
 const { SystemConfig } = require("./SystemConfig");
 
 // SystemConfig.sync({force: true})
@@ -9,7 +11,11 @@ const { SystemConfig } = require("./SystemConfig");
 
 SystemConfig.hasMany(PermittedFileType, {
     foreignKey: "configId",
-    as: "permittedFileTypes"
+    as: "permittedFileTypes",
+});
+
+PrintingLog.hasMany(SelectedPrintPage, {
+    foreignKey: "printLogId",
 });
 
 // PermittedFileType.belongsTo(SystemConfig, {
