@@ -11,4 +11,12 @@ function formatDateForDB(date) {
     return "";
 }
 
-module.exports = {formatDateForDB}
+function formatDateTimeForDB(date)
+{
+    if(date)
+    {
+        return new Date(date).toISOString()
+    }
+    return ""
+}
+module.exports = {formatDateForDB, formatDateTimeForDB}

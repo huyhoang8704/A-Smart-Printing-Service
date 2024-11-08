@@ -6,22 +6,27 @@ const SPSO = sequelize.define(
     {
         username: {
             primaryKey: true,
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
         },
         name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false
-        }
-
+            allowNull: false,
+        },
+        role: {
+            type: DataTypes.STRING,
+            defaultValue: "SPSO",
+        },
     },
     {
         createdAt: false,
-        tableName: "SPSO"
+        tableName: "SPSO",
     }
-)
+);
 
-module.exports = {SPSO}
+// SPSO.sync({alter: true})
+
+module.exports = { SPSO };

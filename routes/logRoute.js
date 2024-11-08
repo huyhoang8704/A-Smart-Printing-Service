@@ -5,11 +5,11 @@ const router = Router();
 
 router.use(authenticateToken)
 
-// router.post("/", logController.createLog);
-router.get("/:userId", logController.getLog);
-router.get("/time/:userId", logController.getLogsByTimeStudent);
-router.get("/allStudent/time", logController.getLogsByTime);
-router.put("/:userId", logController.updateLog);
+router.get("/", logController.getLogsByIdHandler); // For user
+router.get("/all", logController.getAllLogs); // For SPSO
+// router.get("/time/:userId", logController.getLogsByTimeStudent);
+// router.get("/allStudent/time", logController.getLogsByTime);
+router.patch("/:id", logController.updateLog); // For user
 
 // Add more routes as needed
 

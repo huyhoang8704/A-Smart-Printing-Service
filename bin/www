@@ -4,7 +4,6 @@
  * Module dependencies.
  */
 
-
 const sequelize = require("../config/mysql.database");
 
 var app = require("../app");
@@ -17,8 +16,10 @@ const { Printer } = require("../models/Printer");
 const { PrintingLog } = require("../models/PrintingLog");
 const { SPSO } = require("../models/SPSO");
 const { File } = require("../models/File");
-require("../models/associations")
-require("dotenv").config()
+const { SelectedPrintPage } = require("../models/SelectedPrintPage");
+
+require("../models/associations");
+require("dotenv").config();
 
 /**
  * Get port from environment and store in Express.

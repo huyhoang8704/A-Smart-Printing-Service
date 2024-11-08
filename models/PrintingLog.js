@@ -6,7 +6,7 @@ const PrintingLog = sequelize.define(
     {
         id: {
             primaryKey: true,
-            type: DataTypes.STRING(36)
+            type: DataTypes.STRING(36),
         },
         startTime: {
             type: DataTypes.DATE,
@@ -15,38 +15,41 @@ const PrintingLog = sequelize.define(
         finishTime: {
             type: DataTypes.DATE,
         },
-        a4Quantity: {
+        pages: { // in A4 quantity
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
         },
-        a3Quantity: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+        pageSize: {
+            type: DataTypes.ENUM('A4', "A3"),
+            allowNull: false,
         },
         noOfCopies: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+        },
+        printOption: {
+            type: DataTypes.ENUM("one-sided", "double-sided"),
         },
         fileId: {
             type: DataTypes.STRING(36),
-            allowNull: false
+            allowNull: false,
         },
         printerId: {
             type: DataTypes.STRING(36),
-            allowNull: false
+            allowNull: false,
         },
         userId: {
             type: DataTypes.STRING,
-            allowNull: false
-        }   
+            allowNull: false,
+        },
     },
     {
         createdAt: false,
-        tableName: "PrintingLogs"
+        tableName: "PrintingLogs",
     }
-)
+);
 
 // PrintingLog.sync({force: true})
 // PrintingLog.sync({alter: true})
 
-module.exports = PrintingLog
+module.exports = PrintingLog;

@@ -1,7 +1,8 @@
 const { getUser } = require("../controllers/user.controller");
 const PrintingLog = require("../models/PrintingLog");
-const { Op } = require("sequelize");
+const { Op, and, fn, col, Sequelize } = require("sequelize");
 const User = require("../models/User");
+const { formatDateForDB } = require("../utils/dateFormat");
 class LogService {
     // async createLog(userId, printerId, fileId, startTime, finishTime, a4Quantity, a3Quantity, noOfCopies) {
     //     console.log("Creating log");
@@ -21,12 +22,22 @@ class LogService {
         return await PrintingLog.findByPk(id);
     }
 
-    async getLogByUserId(userId, page, limit) {
+    async getLogByUserId(userId, date, page, limit) {
         console.log("getLogByStudentUserName log for student:", userId);
+        let condition = {
+            userId: userId,
+        };
+        if (date) {
+            condition = {
+                [Op.and]: [
+                    { userId: userId },
+                    Sequelize.where(Sequelize.fn("DATE", Sequelize.col("startTime")), formatDateForDB(new Date(date))),
+                ],
+            };
+        }
+
         return await PrintingLog.findAll({
-            where: {
-                userId: userId,
-            },
+            where: condition,
             limit: limit,
             offset: (page - 1) * limit,
         });
@@ -48,8 +59,48 @@ class LogService {
         });
     }
 
-    async getTotalLogsOfStudent(userId, startTime) {
+    async countTotalLogsOfStudent(userId, date) {
+        if (date) {
+            return await PrintingLog.count({
+                where: {
+                    [Op.and]: [
+                        { userId: userId },
+                        Sequelize.where(
+                            Sequelize.fn("DATE", Sequelize.col("startTime")),
+                            formatDateForDB(new Date(date))
+                        ),
+                    ],
+                },
+            });
+        }
         return await PrintingLog.count({ where: { userId: userId } });
+    }
+
+    async countAllLogs(date) {
+        let condition = {};
+        if (date)
+            condition = Sequelize.where(
+                Sequelize.fn("DATE", Sequelize.col("startTime")),
+                formatDateForDB(new Date(date))
+            );
+        return await PrintingLog.count({
+            where: condition
+        })
+    }
+
+    async getAllLogs(date, limit, page) {
+        let condition = {};
+        if (date) {
+            condition = Sequelize.where(
+                Sequelize.fn("DATE", Sequelize.col("startTime")),
+                formatDateForDB(new Date(date))
+            );
+        }
+        return await PrintingLog.findAll({
+            where: condition,
+            limit: limit,
+            offset: (page - 1) * limit,
+        });
     }
 
     async getLogsByTime(startTime, endTime) {
@@ -65,12 +116,14 @@ class LogService {
         });
     }
 
-    async updateLog(id, updates) {
+    async updateLog(id, finishTime) {
         const log = await PrintingLog.findByPk(id);
         if (!log) {
             throw new Error("Log not found");
         }
-        return await log.update(updates);
+        return await log.update({
+            finishTime,
+        });
     }
 }
 
