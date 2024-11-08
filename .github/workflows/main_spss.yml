@@ -59,4 +59,4 @@ jobs:
           app-name: 'SPSS'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FEFA3CC44CF64D5DA14C89C19A35FB1F }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6DDED58B30F5490AB76A969DE942F30C }}
