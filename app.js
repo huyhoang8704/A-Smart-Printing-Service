@@ -13,8 +13,8 @@ var systemConfigRouter = require("./routes/systemConfigRoute");
 const reportRouter = require("./routes/reportRoute");
 var logRoute = require("./routes/logRoute");
 var printRouter = require("./routes/printRoute");
-var pageRouter = require("./routes/pageBoughtRoute")
-var SPSORouter = require("./routes/SPSO")
+var pageRouter = require("./routes/pageBoughtRoute");
+var SPSORouter = require("./routes/SPSO");
 var app = express();
 
 upload.single("file");
@@ -30,7 +30,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cors());
+var whitelist = ["http://localhost:3000"];
+var corsOptions = {
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+};
+app.use(cors(corsOptions));
 
 app.use("/printers", printerRouter);
 app.use("/system-config", systemConfigRouter);
