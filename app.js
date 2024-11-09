@@ -79,7 +79,7 @@ sequelize
     .authenticate()
     .then(() => {
         console.log("Database synchronized");
-        app.listen(3001, () => {
+        app.listen(process.env.PORT, () => {
             console.log("Server running at port 3001");
         });
     })
