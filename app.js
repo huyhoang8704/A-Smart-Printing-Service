@@ -24,6 +24,7 @@ var userRouter = require("./routes/userRoute");
 var systemConfigRouter = require("./routes/systemConfigRoute");
 const reportRouter = require("./routes/reportRoute");
 var logRoute = require("./routes/logRoute");
+var SPSORouter = require("./routes/SPSORoute");
 var printRouter = require("./routes/printRoute");
 var pageRouter = require("./routes/pageBoughtRoute");
 var app = express();
