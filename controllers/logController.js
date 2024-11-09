@@ -15,15 +15,15 @@ class LogController {
                 const total = await logService.countTotalLogsOfStudent(userId, date);
                 console.log("Logs found:", logs);
 
-                const formattedLogs = logs.map((log) => {
-                    return {
-                        ...log.toJSON(),
-                        startPrintDate: log.startTime.toISOString().split("T")[0],
-                        startPrintTime: log.startTime.toISOString().split("T")[1].split(".")[0],
-                        endPrintDate: log.finishTime ? log.finishTime.toISOString().split("T")[0] : null,
-                        endPrintTime: log.finishTime ? log.finishTime.toISOString().split("T")[1].split(".")[0] : null,
-                    };
-                });
+                // const formattedLogs = logs.map((log) => {
+                //     return {
+                //         ...log.toJSON(),
+                //         startPrintDate: log.startTime.toISOString().split("T")[0],
+                //         startPrintTime: log.startTime.toISOString().split("T")[1].split(".")[0],
+                //         endPrintDate: log.finishTime ? log.finishTime.toISOString().split("T")[0] : null,
+                //         endPrintTime: log.finishTime ? log.finishTime.toISOString().split("T")[1].split(".")[0] : null,
+                //     };
+                // });
                 res.status(200).json({
                     status: "success",
                     page,
@@ -31,7 +31,7 @@ class LogController {
                     total,
                     maxPage: getCeilingNumber(total / limit),
                     date,
-                    data: formattedLogs,
+                    data: logs,
                 });
             } catch (error) {
                 console.error("Error fetching logs:", error);
@@ -86,20 +86,20 @@ class LogController {
         try {
             const logs = await logService.getLogsByTime(startTime, endTime);
 
-            const formattedLogs = logs.map((log) => ({
-                ...log.toJSON(),
-                startPrintDate: log.startTime.toISOString().split("T")[0],
-                startPrintTime: log.startTime.toISOString().split("T")[1].split(".")[0],
-                endPrintDate: log.finishTime.toISOString().split("T")[0],
-                endPrintTime: log.finishTime.toISOString().split("T")[1].split(".")[0],
-            }));
+            // const formattedLogs = logs.map((log) => ({
+            //     ...log.toJSON(),
+            //     startPrintDate: log.startTime.toISOString().split("T")[0],
+            //     startPrintTime: log.startTime.toISOString().split("T")[1].split(".")[0],
+            //     endPrintDate: log.finishTime.toISOString().split("T")[0],
+            //     endPrintTime: log.finishTime.toISOString().split("T")[1].split(".")[0],
+            // }));
             res.status(200).json({
                 status: "success",
                 page,
                 limit,
                 maxPage: getCeilingNumber(total / limit),
                 total,
-                data: formattedLogs,
+                data: logs,
             });
         } catch (error) {
             console.error("Error fetching logs:", error);

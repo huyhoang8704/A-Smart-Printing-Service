@@ -109,7 +109,7 @@ const login = async (req, res) => {
             token,
         });
     } catch (error) {
-        res.status(500).json({ message: "Có lỗi xảy ra.", error: error.message });
+        res.status(500).json({ status: "failed", message: "Có lỗi xảy ra.", error: error.message });
     }
 };
 const getUser = async (req, res) => {

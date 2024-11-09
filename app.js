@@ -4,6 +4,18 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var multer = require("multer");
+const sequelize = require("./config/mysql.database");
+const { SystemConfig } = require("./models/SystemConfig");
+const { PermittedFileType } = require("./models/PermittedFileType");
+const { PaperBoughtHistory } = require("./models/PaperBoughtHistory");
+const { Printer } = require("./models/Printer");
+const { PrintingLog } = require("./models/PrintingLog");
+const { SPSO } = require("./models/SPSO");
+const { File } = require("./models/File");
+const { SelectedPrintPage } = require("./models/SelectedPrintPage");
+
+require("./models/associations");
+require("dotenv").config();
 var cors = require("cors");
 var upload = multer();
 var printerRouter = require("./routes/printerRoute");
@@ -14,7 +26,6 @@ const reportRouter = require("./routes/reportRoute");
 var logRoute = require("./routes/logRoute");
 var printRouter = require("./routes/printRoute");
 var pageRouter = require("./routes/pageBoughtRoute");
-var SPSORouter = require("./routes/SPSO");
 var app = express();
 
 upload.single("file");
@@ -30,17 +41,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-var whitelist = ["http://localhost:3000"];
-var corsOptions = {
-    origin: function (origin, callback) {
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-};
-app.use(cors(corsOptions));
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        credentials: true,
+    })
+);
 
 app.use("/printers", printerRouter);
 app.use("/system-config", systemConfigRouter);
@@ -51,6 +57,9 @@ app.use("/print", printRouter);
 app.use("/page", pageRouter);
 app.use("/admin", SPSORouter);
 
+// app.post("/fake", (req, res) => {
+//     res.send("ok")
+// })
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));
@@ -66,4 +75,15 @@ app.use(function (err, req, res, next) {
     res.render("error");
 });
 
-module.exports = app;
+sequelize
+    .authenticate()
+    .then(() => {
+        console.log("Database synchronized");
+        app.listen(3001, () => {
+            console.log("Server running at port 3001");
+        });
+    })
+    .catch((error) => {
+        console.error("Unable to synchronize the database:", error);
+    });
+// module.exports = app;

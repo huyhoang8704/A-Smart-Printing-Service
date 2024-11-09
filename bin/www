@@ -4,22 +4,11 @@
  * Module dependencies.
  */
 
-const sequelize = require("../config/mysql.database");
 
 var app = require("../app");
 var debug = require("debug")("expressj-example:server");
 var http = require("http");
-const { SystemConfig } = require("../models/SystemConfig");
-const { PermittedFileType } = require("../models/PermittedFileType");
-const { PaperBoughtHistory } = require("../models/PaperBoughtHistory");
-const { Printer } = require("../models/Printer");
-const { PrintingLog } = require("../models/PrintingLog");
-const { SPSO } = require("../models/SPSO");
-const { File } = require("../models/File");
-const { SelectedPrintPage } = require("../models/SelectedPrintPage");
 
-require("../models/associations");
-require("dotenv").config();
 
 /**
  * Get port from environment and store in Express.
@@ -37,17 +26,7 @@ var server = http.createServer(app);
 /**
  * Synchronize the models with the database
  */
-sequelize
-    .authenticate()
-    .then(() => {
-        console.log("Database synchronized");
-        server.listen(port);
-        server.on("error", onError);
-        server.on("listening", onListening);
-    })
-    .catch((error) => {
-        console.error("Unable to synchronize the database:", error);
-    });
+
 
 /**
  * Normalize a port into a number, string, or false.
