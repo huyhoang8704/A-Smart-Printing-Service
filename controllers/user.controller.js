@@ -6,6 +6,14 @@ const { v4: uuidv4 } = require("uuid");
 
 dotenv.config();
 
+const COOKIE_OPTION = {
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: true,
+    domain: "localhost",
+    path: "/",
+};
+
 const register = async (req, res) => {
     try {
         const { fullName, email, password, role, uniId } = req.body;
@@ -44,11 +52,7 @@ const register = async (req, res) => {
         await newUser.save();
 
         // Set cookie
-        res.cookie("token", token, {
-            maxAge: 24 * 60 * 60 * 1000,
-            httpOnly: true,
-            secure: true,
-        });
+        res.cookie("token", token, COOKIE_OPTION);
 
         res.status(201).json({
             message: "Đăng ký thành công!",
@@ -91,11 +95,7 @@ const login = async (req, res) => {
         user.token = token;
         await user.save();
         // Set cookie
-        res.cookie("token", token, {
-            maxAge: 24 * 60 * 60 * 1000,
-            httpOnly: true,
-            secure: true,
-        });
+        res.cookie("token", token, COOKIE_OPTION);
 
         res.status(200).json({
             message: "Đăng nhập thành công!",
