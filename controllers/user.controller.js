@@ -10,7 +10,6 @@ const COOKIE_OPTION = {
     maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
     secure: false,
-    domain: "localhost",
     path: "/",
 };
 
