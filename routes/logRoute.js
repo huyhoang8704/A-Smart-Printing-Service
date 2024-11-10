@@ -1,9 +1,9 @@
 const { Router } = require("express");
 const logController = require("../controllers/logController");
-const authenticateToken = require("../middlewares/authenticate.middleware");
+const {authenticateBearerToken} = require("../middlewares/authenticate.middleware");
 const router = Router();
 
-router.use(authenticateToken)
+router.use(authenticateBearerToken)
 
 router.get("/", logController.getLogsByIdHandler); // For user
 router.get("/all", logController.getAllLogs); // For SPSO
