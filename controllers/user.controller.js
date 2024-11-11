@@ -116,7 +116,7 @@ const getUser = async (req, res) => {
         const userId = req.user.id;
 
         const user = await User.findByPk(userId, {
-            attributes: ["id", "fullName", "email", "role", "numberPage"], // Chỉ lấy các trường cần thiết
+            attributes: ["id", "fullName", "email", "role", "numberPage", "uniId"], // Chỉ lấy các trường cần thiết
         });
 
         if (!user) {
