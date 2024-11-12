@@ -6,7 +6,7 @@ const PaperBoughtHistory = sequelize.define(
     {
         id: {
             type: DataTypes.STRING(36),
-            primaryKey: true
+            primaryKey: true,
         },
         userId: {
             type: DataTypes.STRING,
@@ -19,13 +19,17 @@ const PaperBoughtHistory = sequelize.define(
         totalBill: {
             type: DataTypes.DOUBLE,
             allowNull: false,
-        }
+        },
+        status: {
+            type: DataTypes.ENUM("paid", "cancelled", "unpaid"),
+            defaultValue: "unpaid",
+        },
         // createdAt is default
     },
     {
         tableName: "PaperBoughtHistories",
     }
-)
+);
 // PaperBoughtHistory.sync({alter: true})
 
-module.exports = {PaperBoughtHistory}
+module.exports = { PaperBoughtHistory };
