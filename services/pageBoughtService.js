@@ -3,7 +3,6 @@ const sequelize = require("../config/mysql.database");
 const { PaperBoughtHistory } = require("../models/PaperBoughtHistory");
 const User = require("../models/User");
 const { generateUUIDV4 } = require("../utils/idManager");
-const { getUserById } = require("./userService");
 const { formatDateForDB } = require("../utils/dateFormat");
 
 const PAGE_PRICE = 1000;
@@ -55,7 +54,7 @@ async function updatePageBoughtOrder(userId, data) {
 
 async function requestBuyPage(userId, pageNum) {
     try {
-        const user = await getUserById(userId);
+        // const user = await getUserById(userId);
         const history = await PaperBoughtHistory.create({
             userId: userId,
             id: generateUUIDV4(),
@@ -65,7 +64,7 @@ async function requestBuyPage(userId, pageNum) {
         });
         return {
             boughtHistory: history,
-            userInfo: { fullName: user.fullName, numberPage: user.numberPage, email: user.email },
+            // userInfo: { fullName: user.fullName, numberPage: user.numberPage, email: user.email },
         };
     } catch (error) {
         console.log(error);
