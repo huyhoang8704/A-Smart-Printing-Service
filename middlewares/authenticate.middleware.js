@@ -5,7 +5,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const authenticateBearerToken = (req, res, next) => {
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
-        return res.status(401).json({ message: "Authorization token missing or invalid" });
+        return res.status(401).json({ status: "failed", message: "Authorization token missing or invalid" });
     }
     const token = authorizationHeader.split(" ")[1]; // Extract the token after "Bearer"
     jwt.verify(token, JWT_SECRET, (err, user) => {

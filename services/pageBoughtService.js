@@ -16,7 +16,7 @@ async function updatePageBoughtOrder(userId, data) {
             if (history) {
                 // check if order exists
                 if (history.status === "cancelled" || history.status === "paid") {
-                    let forbiddenError = new Error("This order cannot changed");
+                    let forbiddenError = new Error("This order is immutable");
                     forbiddenError.name = "FORBIDDEN";
                     throw forbiddenError; // 403
                 } else {
