@@ -3,6 +3,7 @@ const PrintingLog = require("../models/PrintingLog");
 const { Op, and, fn, col, Sequelize } = require("sequelize");
 const User = require("../models/User");
 const { formatDateForDB } = require("../utils/dateFormat");
+const { File } = require("../models/File");
 class LogService {
     // async createLog(userId, printerId, fileId, startTime, finishTime, a4Quantity, a3Quantity, noOfCopies) {
     //     console.log("Creating log");
@@ -20,6 +21,15 @@ class LogService {
 
     async getLogById(id) {
         return await PrintingLog.findByPk(id);
+    }
+
+    async getPrintedFile(fileId) {
+        try {
+            const file = await File.findByPk(fileId);
+            return file;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async getLogByUserId(userId, date, page, limit) {
@@ -40,6 +50,12 @@ class LogService {
             where: condition,
             limit: limit,
             offset: (page - 1) * limit,
+            include: [
+                {
+                    model: File,
+                    attributes: ["id", "fileName"],
+                },
+            ],
         });
     }
 
@@ -84,8 +100,8 @@ class LogService {
                 formatDateForDB(new Date(date))
             );
         return await PrintingLog.count({
-            where: condition
-        })
+            where: condition,
+        });
     }
 
     async getAllLogs(date, limit, page) {
@@ -100,6 +116,16 @@ class LogService {
             where: condition,
             limit: limit,
             offset: (page - 1) * limit,
+            include: [
+                {
+                    model: File,
+                    attributes: ["id", "fileName"],
+                },
+                {
+                    model: User,
+                    attributes: ["role", "id", "uniId", "fullName"],
+                },
+            ],
         });
     }
 

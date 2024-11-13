@@ -1,6 +1,7 @@
 const logService = require("../services/logService");
 const Log = require("../models/PrintingLog");
 const { getCeilingNumber } = require("../utils/numberFormat");
+const { formatDateForDB, formatLocalTime } = require("../utils/dateFormat");
 class LogController {
     async getLogsByIdHandler(req, res) {
         const userId = req.user.id;
@@ -13,17 +14,18 @@ class LogController {
                 page = parseInt(page);
                 const logs = await logService.getLogByUserId(userId, date, page, limit);
                 const total = await logService.countTotalLogsOfStudent(userId, date);
+                // const printedFile = await logService.getPrintedFile(logs.)
                 console.log("Logs found:", logs);
 
-                // const formattedLogs = logs.map((log) => {
-                //     return {
-                //         ...log.toJSON(),
-                //         startPrintDate: log.startTime.toISOString().split("T")[0],
-                //         startPrintTime: log.startTime.toISOString().split("T")[1].split(".")[0],
-                //         endPrintDate: log.finishTime ? log.finishTime.toISOString().split("T")[0] : null,
-                //         endPrintTime: log.finishTime ? log.finishTime.toISOString().split("T")[1].split(".")[0] : null,
-                //     };
-                // });
+                const formattedLogs = logs.map((log) => {
+                    return {
+                        ...log.toJSON(), // toJSON is used to delete all the redundant fields returned by sequelize
+                        startPrintDate: formatDateForDB(log.startTime),
+                        startPrintTime: formatLocalTime(log.startTime),
+                        endPrintDate: formatDateForDB(log.finishTime),
+                        endPrintTime: formatLocalTime(log.finishTime),
+                    };
+                });
                 res.status(200).json({
                     status: "success",
                     page,
@@ -31,7 +33,7 @@ class LogController {
                     total,
                     maxPage: getCeilingNumber(total / limit),
                     date,
-                    data: logs,
+                    data: formattedLogs,
                 });
             } catch (error) {
                 console.error("Error fetching logs:", error);

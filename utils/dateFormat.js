@@ -11,12 +11,21 @@ function formatDateForDB(date) {
     return "";
 }
 
-function formatDateTimeForDB(date)
-{
-    if(date)
-    {
-        return new Date(date).toISOString()
+function formatLocalTime(date) {
+    if (date) {
+        let formattedDate = new Date(date);
+        return `${String(formattedDate.getHours()).padStart(2, "0")}:${String(formattedDate.getMinutes()).padStart(
+            2,
+            "0"
+        )}:${String(formattedDate.getSeconds()).padStart(2, "0")}`;
     }
-    return ""
+    return "";
 }
-module.exports = {formatDateForDB, formatDateTimeForDB}
+
+function formatDateTimeForDB(date) {
+    if (date) {
+        return new Date(date).toISOString();
+    }
+    return "";
+}
+module.exports = { formatDateForDB, formatDateTimeForDB, formatLocalTime };
