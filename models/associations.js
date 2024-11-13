@@ -5,6 +5,7 @@ const PrintingLog = require("./PrintingLog");
 const { SelectedPrintPage } = require("./SelectedPrintPage");
 const { SystemConfig } = require("./SystemConfig");
 const { File } = require("./File");
+const { Printer } = require("./Printer");
 const User = require("./User");
 
 // SystemConfig.sync({force: true})
@@ -26,6 +27,10 @@ PrintingLog.belongsTo(File, {
 
 PrintingLog.belongsTo(User, {
     foreignKey: "userId"
+})
+
+PrintingLog.belongsTo(Printer, {
+    foreignKey: 'printerId'
 })
 
 // PermittedFileType.belongsTo(SystemConfig, {

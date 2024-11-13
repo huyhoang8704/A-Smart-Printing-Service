@@ -4,6 +4,7 @@ const { Op, and, fn, col, Sequelize } = require("sequelize");
 const User = require("../models/User");
 const { formatDateForDB } = require("../utils/dateFormat");
 const { File } = require("../models/File");
+const { Printer } = require("../models/Printer");
 class LogService {
     // async createLog(userId, printerId, fileId, startTime, finishTime, a4Quantity, a3Quantity, noOfCopies) {
     //     console.log("Creating log");
@@ -50,10 +51,17 @@ class LogService {
             where: condition,
             limit: limit,
             offset: (page - 1) * limit,
+            attributes: {
+                exclude: ["printerId", "fileId"],
+            },
             include: [
                 {
                     model: File,
                     attributes: ["id", "fileName"],
+                },
+                {
+                    model: Printer,
+                    attributes: ["id", "model", "building", "room", "manufacturer"],
                 },
             ],
         });
@@ -124,6 +132,10 @@ class LogService {
                 {
                     model: User,
                     attributes: ["role", "id", "uniId", "fullName"],
+                },
+                {
+                    model: Printer,
+                    attributes: ["id", "model", "building", "room", "manufacturer"],
                 },
             ],
         });
