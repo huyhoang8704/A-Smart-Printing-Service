@@ -1,7 +1,7 @@
 console.log("asssociation");
 
 const { PermittedFileType } = require("./PermittedFileType");
-const PrintingLog = require("./PrintingLog");
+const {PrintingLog} = require("./PrintingLog");
 const { SelectedPrintPage } = require("./SelectedPrintPage");
 const { SystemConfig } = require("./SystemConfig");
 const { File } = require("./File");

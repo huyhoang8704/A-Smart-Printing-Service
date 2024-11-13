@@ -15,14 +15,16 @@ async function _getPrintingTurn(date, option) {
         }
         console.log(newDate);
 
-        const response = await PrintingLog.findOne({
+        const response = await PrintingLog.findAll({
             attributes: [
-                [fn('COUNT', col("*")), 'printingTurn'],
-                [fn('SUM', col("a4Quantity")), 'a4Quantity'],
-                [fn('SUM', col("a3Quantity")), 'a3Quantity'],
+                [fn("COUNT", col("*")), "printingTurn"],
+                [fn("SUM", col("pages")), "pages"],
+                "pageSize"
             ],
+            group: ["pageSize"],
             where: Sequelize.where(fn(option, col("startTime")), newDate),
         });
+        
         return response;
     } catch (error) {
         console.log(error);
@@ -42,12 +44,12 @@ async function _getPaperBoughtStat(date, option) {
         }
         const response = await PaperBoughtHistory.findOne({
             attributes: [
-                
                 [fn("SUM", col("noOfPage")), "totalPages"],
                 [fn("SUM", col("totalBill")), "totalRevenue"],
             ],
             where: Sequelize.where(fn(option, col("createdAt")), newDate),
         });
+        
         return response;
     } catch (error) {
         console.log(error);
@@ -62,7 +64,6 @@ async function getRevenueOfYearOverMonth({ year }) {
                 attributes: [
                     [fn("SUM", col("totalBill")), "totalRevenue"],
                     [fn("MONTH", col("createdAt")), "month"],
-                   
                 ],
                 group: [fn("MONTH", col("createdAt"))],
                 where: Sequelize.where(fn("YEAR", col("createdAt")), year),
@@ -72,9 +73,7 @@ async function getRevenueOfYearOverMonth({ year }) {
             console.log(error);
             return { status: "failed", error };
         }
-    }
-    else 
-    {
+    } else {
         return { status: "failed", msg: "year is required" };
     }
 }
@@ -83,7 +82,7 @@ async function getReport({ date, option }) {
     let opt = option || "DATE";
     if (date) {
         console.log(date);
-        
+
         const formattedDate = formatDateForDB(date);
         console.log(formattedDate);
         const printingStat = await _getPrintingTurn(formattedDate, opt);

@@ -18,21 +18,21 @@ const authenticateBearerToken = (req, res, next) => {
 };
 
 // Middleware xác thực JWT từ cookie
-const authenticateCookieToken = (req, res, next) => {
-    const token = req.cookies.token;
+// const authenticateCookieToken = (req, res, next) => {
+//     const token = req.cookies.token;
 
-    if (!token) {
-        return res.status(401).json({ status: "failed", message: "Bạn cần đăng nhập để truy cập tài nguyên này." });
-    }
+//     if (!token) {
+//         return res.status(401).json({ status: "failed", message: "Bạn cần đăng nhập để truy cập tài nguyên này." });
+//     }
 
-    // Kiểm tra và xác thực token
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ status: "failed", message: "Token không hợp lệ hoặc đã hết hạn." });
-        }
-        req.user = user;
-        next();
-    });
-};
+//     // Kiểm tra và xác thực token
+//     jwt.verify(token, JWT_SECRET, (err, user) => {
+//         if (err) {
+//             return res.status(403).json({ status: "failed", message: "Token không hợp lệ hoặc đã hết hạn." });
+//         }
+//         req.user = user;
+//         next();
+//     });
+// };
 
-module.exports = { authenticateCookieToken, authenticateBearerToken };
+module.exports = { authenticateBearerToken };
