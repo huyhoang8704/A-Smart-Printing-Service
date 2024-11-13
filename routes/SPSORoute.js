@@ -1,11 +1,11 @@
 const { Router } = require("express");
 const SPSOController = require("../controllers/SPSOController");
-const authenticateTokenMiddleware = require("../middlewares/authenticateSPSO")
+const authenticateBearerToken = require("../middlewares/authenticateSPSO");
 const router = Router();
 
 router.post("/register", SPSOController.register);
 router.post("/login", SPSOController.login);
-router.post("/logout",authenticateTokenMiddleware ,SPSOController.logout);
+router.post("/logout", authenticateBearerToken, SPSOController.logout);
 
 // router.get("/:id", authenticateTokenMiddleware , userController.getUser);
 // router.put("/:id", userController.updateUser);

@@ -5,16 +5,15 @@
 -   Phải cài đặt trước và kết nối được mysql, nodejs, npm
 -   tạo 1 database trong mysql, bỏ các username, password,.. trong file .env
 -   `npm i`
--   `node ./bin/www`
+-   `npm start`
 
 ## Cấu trúc folder
 
 Tuân theo cấu trúc Model - View - Controller, trong đó View thuộc về phía frontend, backend chỉ quan tâm model và controller
 
-### ./bin/www và app.js
+###  và app.js
 
-app.js là điểm bắt đầu của chương trình, dùng để config các middlewares và định nghĩa routes. ./bin/www được dùng để setup một HTTP server. File này được tạo ra bởi `express-generator`
-
+app.js là điểm bắt đầu của chương trình, dùng để config các middlewares và định nghĩa routes. 
 ### Routes
 
 Định nghĩa các endpoints cho chương trình và map các endpoints với các controllers.
