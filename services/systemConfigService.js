@@ -1,4 +1,5 @@
 // Author: THAI
+const { Op } = require("sequelize");
 const sequelize = require("../config/mysql.database");
 const { PermittedFileType } = require("../models/PermittedFileType");
 const { SystemConfig } = require("../models/SystemConfig");
@@ -27,25 +28,22 @@ async function getSystemConfig(id) {
 async function updateSystemConfig(id, data) {
     const { permittedFileTypes, defaultNoPages, renewDate } = data;
     console.log(data);
-    
+
     const transaction = await sequelize.transaction();
     try {
-        await SystemConfig.upsert(
-            {
-                defaultNoPages: defaultNoPages,
-                renewDate: renewDate,
-                id: id,
-            }
-        );
+        await SystemConfig.upsert({
+            defaultNoPages: defaultNoPages,
+            renewDate: renewDate,
+            id: id,
+        });
 
-
-        if (permittedFileTypes && permittedFileTypes.length > 0) { 
+        if (permittedFileTypes && permittedFileTypes.length > 0) {
             // delete all the old values
-            await PermittedFileType.destroy({ 
+            await PermittedFileType.destroy({
                 where: {
-                    configId: id
-                }
-            })
+                    configId: id,
+                },
+            });
             // add new values
             permittedFileTypes.map(async (type) => {
                 await PermittedFileType.upsert({
@@ -94,7 +92,28 @@ async function deletePermittedFileType(id, fileType) {
     }
 }
 
+async function getPermittedFileTypes() {
+    try {
+        const systemConfig = await SystemConfig.findOne({
+            where: {
+                [Op.and]: [{ startDate: { [Op.lte]: new Date(Date.now()) } }, { endDate: { [Op.gte]: new Date(Date.now()) } }],
+            },
+            include: [
+                {
+                    model: PermittedFileType,
+                    as: "permittedFileTypes",
+                },
+            ],
+        });
+        return {data: {permittedFileTypes: systemConfig.permittedFileTypes, year: systemConfig.year, quarter: systemConfig.quarter}};
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 exports.getSystemConfig = getSystemConfig;
 exports.updateSystemConfig = updateSystemConfig;
 exports.addPermittedFileType = addPermittedFileType;
 exports.deletePermittedFileType = deletePermittedFileType;
+exports.getPermittedFileTypes = getPermittedFileTypes;

@@ -6,8 +6,9 @@ const { authenticateBearerToken } = require("../middlewares/authenticate.middlew
 const { authenticateRoleMiddleware } = require("../middlewares/authenticateRole");
 
 router.use(authenticateBearerToken);
+router.get("/permitted-file-types", systemConfigController.getPermittedFileTypeHandler);
 
-router.get("/:id", authenticateRoleMiddleware(["SPSO"]), systemConfigController.getSystemConfigHandler);
+router.get("/:id", systemConfigController.getSystemConfigHandler);
 router.put("/:id", authenticateRoleMiddleware(["SPSO"]), systemConfigController.updateSystemConfigHandler);
 router.delete(
     "/:id/file-type/:fileType",
@@ -15,5 +16,6 @@ router.delete(
     systemConfigController.deletePermittedFileTypeHandler
 );
 router.post("/:id", authenticateRoleMiddleware(["SPSO"]), systemConfigController.addPermittedFileTypeHandler);
+
 
 module.exports = router;
