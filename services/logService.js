@@ -1,5 +1,5 @@
 const { getUser } = require("../controllers/user.controller");
-const PrintingLog = require("../models/PrintingLog");
+const {PrintingLog} = require("../models/PrintingLog");
 const { Op, and, fn, col, Sequelize } = require("sequelize");
 const User = require("../models/User");
 const { formatDateForDB } = require("../utils/dateFormat");
