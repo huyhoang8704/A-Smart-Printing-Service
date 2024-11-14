@@ -1,24 +1,11 @@
 const { getUser } = require("../controllers/user.controller");
 const {PrintingLog} = require("../models/PrintingLog");
-const { Op, and, fn, col, Sequelize } = require("sequelize");
+const { Op, and, fn, col, Sequelize, where } = require("sequelize");
 const User = require("../models/User");
 const { formatDateForDB } = require("../utils/dateFormat");
 const { File } = require("../models/File");
 const { Printer } = require("../models/Printer");
 class LogService {
-    // async createLog(userId, printerId, fileId, startTime, finishTime, a4Quantity, a3Quantity, noOfCopies) {
-    //     console.log("Creating log");
-    //     return await PrintingLog.create({
-    //         userId,
-    //         printerId,
-    //         fileId,
-    //         startTime,
-    //         finishTime,
-    //         a4Quantity,
-    //         a3Quantity,
-    //         noOfCopies,
-    //     });
-    // }
 
     async getLogById(id) {
         return await PrintingLog.findByPk(id);
