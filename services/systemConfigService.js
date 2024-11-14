@@ -105,7 +105,7 @@ async function getPermittedFileTypes() {
                 },
             ],
         });
-        return {data: {permittedFileTypes: systemConfig.permittedFileTypes, year: systemConfig.year, quarter: systemConfig.quarter}};
+        return {permittedFileTypes: systemConfig.permittedFileTypes, year: systemConfig.year, quarter: systemConfig.quarter};
     } catch (error) {
         console.log(error);
         throw error;
