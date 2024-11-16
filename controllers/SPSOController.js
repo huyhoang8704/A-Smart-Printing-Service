@@ -23,14 +23,12 @@ const register = async (req, res) => {
     try {
         const { username, name, password, role = "SPSO" } = req.body;
         if (!username || !name || !password) {
-            return res
-                .status(400)
-                .json({
-                    status: "failed",
-                    message: `${!username ? "username" : ""} ${!name ? "name" : ""}${
-                        !password ? ", password" : ""
-                    } is required.`,
-                });
+            return res.status(400).json({
+                status: "failed",
+                message: `${!username ? "username" : ""} ${!name ? "name" : ""}${
+                    !password ? ", password" : ""
+                } is required.`,
+            });
         }
         const existingUser = await SPSO.findOne({ where: { username } });
         if (existingUser) {
@@ -63,7 +61,7 @@ const register = async (req, res) => {
             user: {
                 // id: newSPSO.id,
                 name: newSPSO.name,
-                role: newSPSO.role
+                role: newSPSO.role,
             },
             token: newSPSO.token,
         });
@@ -100,12 +98,23 @@ const login = async (req, res) => {
             message: `Chúc mừng ${user.name} đăng nhập thành công`,
             user: {
                 name: user.name,
-                role: user.role
+                role: user.role,
             },
             token: user.token,
         });
     } catch (error) {
         res.status(500).json({ status: "failed", message: "Có lỗi xảy ra.", error: error.message });
+    }
+};
+
+const getProfile = async (req, res) => {
+    try {
+        console.log(req.user);
+        
+        const SPSOProfile = await SPSO.findByPk(req.user.username);
+        res.send({ status: "success", user: { name: SPSOProfile.name, role: SPSOProfile.role } });
+    } catch (error) {
+        res.status(403).send({ status: "success", error: error.message});
     }
 };
 
@@ -118,4 +127,5 @@ module.exports = {
     register,
     login,
     logout,
+    getProfile,
 };

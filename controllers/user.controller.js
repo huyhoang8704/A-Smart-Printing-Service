@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
 const { v4: uuidv4 } = require("uuid");
+const { getCurrentDefaultPageNum } = require("../services/systemConfigService");
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ const register = async (req, res) => {
             id: uuidv4(), // Random ID
             fullName,
             email,
+            numberPage: await getCurrentDefaultPageNum(),
             uniId,
             password: hashedPassword,
             role: role || "student",

@@ -3,6 +3,19 @@ const { Op } = require("sequelize");
 const sequelize = require("../config/mysql.database");
 const { PermittedFileType } = require("../models/PermittedFileType");
 const { SystemConfig } = require("../models/SystemConfig");
+const { MIME_MAPPING, getTypeExtension } = require("../utils/mimeMapping");
+
+async function getAllSystemConfigs() {
+    try {
+        const response = await SystemConfig.findAll({
+            attributes: ["id", "year", "quarter", "defaultNoPages", "startDate", "endDate"],
+        });
+        return { status: "success", data: response };
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
 
 async function getSystemConfig(id) {
     try {
@@ -26,16 +39,20 @@ async function getSystemConfig(id) {
 }
 
 async function updateSystemConfig(id, data) {
-    const { permittedFileTypes, defaultNoPages, renewDate } = data;
+    let { permittedFileTypes, defaultNoPages, renewDate } = data;
     console.log(data);
+
+    permittedFileTypes = JSON.parse(permittedFileTypes);
 
     const transaction = await sequelize.transaction();
     try {
-        await SystemConfig.upsert({
-            defaultNoPages: defaultNoPages,
-            renewDate: renewDate,
-            id: id,
-        });
+        await SystemConfig.update(
+            {
+                defaultNoPages: defaultNoPages,
+                renewDate: renewDate,
+            },
+            { where: { id: id }, transaction: transaction }
+        );
 
         if (permittedFileTypes && permittedFileTypes.length > 0) {
             // delete all the old values
@@ -43,14 +60,19 @@ async function updateSystemConfig(id, data) {
                 where: {
                     configId: id,
                 },
+                transaction: transaction,
             });
             // add new values
-            permittedFileTypes.map(async (type) => {
-                await PermittedFileType.upsert({
-                    fileType: type,
-                    configId: id,
-                });
+            const createPromises = permittedFileTypes.map((type) => {
+                return PermittedFileType.create(
+                    {
+                        fileType: type,
+                        configId: id,
+                    },
+                    { transaction: transaction }
+                );
             });
+            await Promise.all(createPromises);
         }
         await transaction.commit(); // commit the transaction
 
@@ -96,8 +118,12 @@ async function getPermittedFileTypes() {
     try {
         const systemConfig = await SystemConfig.findOne({
             where: {
-                [Op.and]: [{ startDate: { [Op.lte]: new Date(Date.now()) } }, { endDate: { [Op.gte]: new Date(Date.now()) } }],
+                [Op.and]: [
+                    { startDate: { [Op.lte]: new Date(Date.now()) } },
+                    { endDate: { [Op.gte]: new Date(Date.now()) } },
+                ],
             },
+
             include: [
                 {
                     model: PermittedFileType,
@@ -105,11 +131,36 @@ async function getPermittedFileTypes() {
                 },
             ],
         });
-        return {permittedFileTypes: systemConfig.permittedFileTypes, year: systemConfig.year, quarter: systemConfig.quarter};
+        const types =
+            systemConfig.permittedFileTypes.length > 0 &&
+            systemConfig.permittedFileTypes.map((type) => {
+                return { ...type.toJSON(), extension: getTypeExtension(type.fileType) };
+            });
+        return {
+            permittedFileTypes: types,
+            year: systemConfig.year,
+            quarter: systemConfig.quarter,
+        };
     } catch (error) {
         console.log(error);
         throw error;
     }
+}
+
+async function getCurrentDefaultPageNum() {
+    const systemConfig = await SystemConfig.findOne({
+        where: {
+            [Op.and]: [
+                { startDate: { [Op.lte]: new Date(Date.now()) } },
+                { endDate: { [Op.gte]: new Date(Date.now()) } },
+            ],
+        },
+    });
+    return systemConfig?.defaultNoPages || 0;
+}
+
+function getAllPossibleFileTypes() {
+    return MIME_MAPPING;
 }
 
 exports.getSystemConfig = getSystemConfig;
@@ -117,3 +168,6 @@ exports.updateSystemConfig = updateSystemConfig;
 exports.addPermittedFileType = addPermittedFileType;
 exports.deletePermittedFileType = deletePermittedFileType;
 exports.getPermittedFileTypes = getPermittedFileTypes;
+exports.getAllPossibleFileTypes = getAllPossibleFileTypes;
+exports.getCurrentDefaultPageNum = getCurrentDefaultPageNum;
+exports.getAllSystemConfigs = getAllSystemConfigs;

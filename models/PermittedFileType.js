@@ -8,7 +8,7 @@ const PermittedFileType = sequelize.define(
         configId:  {
             primaryKey: true,
             references: {
-                model: "SystemConfigs", // Name of the target model (table A)
+                model: "SystemConfigs", // Name of the target mox`del (table A)
                 key: 'id',
             },
             type: DataTypes.STRING,

@@ -4,6 +4,7 @@ const {authenticateBearerToken} = require("../middlewares/authenticate.middlewar
 const router = Router();
 
 router.post("/register", SPSOController.register);
+router.get("/profile",authenticateBearerToken, SPSOController.getProfile);
 router.post("/login", SPSOController.login);
 router.post("/logout", authenticateBearerToken, SPSOController.logout);
 

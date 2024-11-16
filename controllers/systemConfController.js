@@ -1,4 +1,14 @@
 const systemConfigService = require("../services/systemConfigService");
+async function getAllSystemConfigHandler (req, res)
+{
+    try {
+        const response = await systemConfigService.getAllSystemConfigs();
+        res.send(response)
+    } catch (error) {
+        res.status(403).send({status: "failed", error: error.message})
+    }
+}
+
 async function getSystemConfigHandler(req, res) {
     try {
         const response = await systemConfigService.getSystemConfig(req.params.id);
@@ -47,8 +57,15 @@ async function getPermittedFileTypeHandler(req, res) {
     }
 }
 
+function getAllPossibleFileTypesHandler(req, res) {
+    const response = systemConfigService.getAllPossibleFileTypes();
+    res.send({ status: "success", data: response });
+}
+
 exports.getSystemConfigHandler = getSystemConfigHandler;
 exports.updateSystemConfigHandler = updateSystemConfigHandler;
 exports.deletePermittedFileTypeHandler = deletePermittedFileTypeHandler;
 exports.addPermittedFileTypeHandler = addPermittedFileTypeHandler;
 exports.getPermittedFileTypeHandler = getPermittedFileTypeHandler;
+exports.getAllPossibleFileTypesHandler = getAllPossibleFileTypesHandler;
+exports.getAllSystemConfigHandler = getAllSystemConfigHandler
