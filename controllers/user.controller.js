@@ -5,6 +5,11 @@ const dotenv = require("dotenv");
 const { v4: uuidv4 } = require("uuid");
 const { getCurrentDefaultPageNum } = require("../services/systemConfigService");
 
+const sendMail = require("../utils/sendMail.js");
+const { generateRandomPassword, getHashedPassword } = require("../utils/password.js");
+const { where } = require("sequelize");
+const userService = require("../services/userService.js");
+const { response } = require("express");
 dotenv.config();
 
 const COOKIE_OPTION = {
@@ -139,9 +144,61 @@ const logout = (req, res) => {
     res.status(200).json({ message: "Đăng xuất thành công!" });
 };
 
+const forgetPassword = async (req, res) => {
+    if (!req.body.email) {
+        res.json({
+            code: "error",
+            msg: "Vui lòng điền email của bạn.",
+        });
+        return;
+    }
+
+    try {
+        const user = await User.findOne({ where: { email: req.body.email } });
+
+        if (!user) {
+            res.json({
+                code: "error",
+                msg: "Email không tồn tại.",
+            });
+            return;
+        }
+        let dummyPassword = generateRandomPassword(); // generate a dummy password
+        let hashedPassword = await getHashedPassword(dummyPassword);
+        await user.update({ password: hashedPassword }); // update that new password to database
+
+        const subject = "Khôi phục mật khẩu";
+        const text = `${dummyPassword}`;
+        await sendMail(req.body.email, subject, text);
+
+        res.json({
+            code: "success",
+            msg: "Đã gửi mật khẩu thành công",
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        res.json({
+            code: "error",
+            msg: "Có lỗi xảy ra, vui lòng thử lại sau.",
+        });
+    }
+};
+
+const changePassword = async (req, res) => {
+    try {
+        const response = await userService.changeUserPassword(req.body);
+        res.send(response);
+    } catch (error) {
+
+        res.status(error.status).send({ status: "failed", error: error.message });
+    }
+};
+
 module.exports = {
     register,
     login,
     getUser,
     logout,
+    forgetPassword,
+    changePassword,
 };

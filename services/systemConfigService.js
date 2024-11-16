@@ -64,13 +64,16 @@ async function updateSystemConfig(id, data) {
             });
             // add new values
             const createPromises = permittedFileTypes.map((type) => {
-                return PermittedFileType.create(
-                    {
-                        fileType: type,
-                        configId: id,
-                    },
-                    { transaction: transaction }
-                );
+                if(getTypeExtension(type)) // if the mime type exist in the valid list then create
+                {
+                    return PermittedFileType.create(
+                        {
+                            fileType: type,
+                            configId: id,
+                        },
+                        { transaction: transaction }
+                    );
+                }
             });
             await Promise.all(createPromises);
         }
