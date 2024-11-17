@@ -9,6 +9,7 @@ router.use(authenticateBearerToken);
 router.get("/file-types/all", systemConfigController.getAllPossibleFileTypesHandler)
 router.get("/permitted-file-types", systemConfigController.getPermittedFileTypeHandler);
 router.get("/all", systemConfigController.getAllSystemConfigHandler);
+router.post("/:id/file-type", authenticateRoleMiddleware(["SPSO"]), systemConfigController.addPermittedFileTypeHandler);
 router.get("/:id", systemConfigController.getSystemConfigHandler);
 router.put("/:id", authenticateRoleMiddleware(["SPSO"]), systemConfigController.updateSystemConfigHandler);
 router.delete(
@@ -17,7 +18,6 @@ router.delete(
     systemConfigController.deletePermittedFileTypeHandler
 );
 
-router.post("/:id", authenticateRoleMiddleware(["SPSO"]), systemConfigController.addPermittedFileTypeHandler);
 
 
 module.exports = router;

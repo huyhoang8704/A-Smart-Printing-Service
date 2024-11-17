@@ -4,6 +4,7 @@ const sequelize = require("../config/mysql.database");
 const { PermittedFileType } = require("../models/PermittedFileType");
 const { SystemConfig } = require("../models/SystemConfig");
 const { MIME_MAPPING, getTypeExtension } = require("../utils/mimeMapping");
+const createHttpError = require("http-errors");
 
 async function getAllSystemConfigs() {
     try {
@@ -64,8 +65,8 @@ async function updateSystemConfig(id, data) {
             });
             // add new values
             const createPromises = permittedFileTypes.map((type) => {
-                if(getTypeExtension(type)) // if the mime type exist in the valid list then create
-                {
+                if (getTypeExtension(type)) {
+                    // if the mime type exist in the valid list then create
                     return PermittedFileType.create(
                         {
                             fileType: type,
@@ -90,15 +91,30 @@ async function updateSystemConfig(id, data) {
 
 async function addPermittedFileType(id, data) {
     const { fileType } = data;
-    try {
-        const response = await PermittedFileType.create({
-            configId: id,
-            fileType: fileType,
-        });
-        return { status: "success", data: response };
-    } catch (error) {
-        console.log(error);
-        return { status: "failed", error };
+    if (getTypeExtension(fileType)) {
+        try {
+            const response = await PermittedFileType.create({
+                configId: id,
+                fileType: fileType,
+            });
+            return { status: "success", data: response };
+        } catch (error) {
+            console.log("myerror", error);
+            if(error.original.code === "ER_DUP_ENTRY")
+            {
+                let httpErr = createHttpError(409, "Duplicate entry");
+                throw httpErr;
+            }
+            else
+            {
+                let httpErr = createHttpError(500, error.message);
+                throw httpErr;
+            }
+            
+        }
+    } else {
+        let httpErr = createHttpError(400, `${fileType} is invalid`);
+        throw httpErr;
     }
 }
 
