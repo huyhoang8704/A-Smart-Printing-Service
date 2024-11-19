@@ -5,7 +5,7 @@ const User = require("../models/User");
 const { generateUUIDV4 } = require("../utils/idManager");
 const { formatDateForDB } = require("../utils/dateFormat");
 
-const PAGE_PRICE = 1000;
+ const PAGE_PRICE = 1000;
 
 async function updatePageBoughtOrder(userId, data) {
     let { status, orderId } = data;
@@ -147,3 +147,4 @@ exports.viewPageBoughtHistory = viewPageBoughtHistory;
 exports.updatePageBoughtOrder = updatePageBoughtOrder;
 exports.addBuyPageHistory = addBuyPageHistory;
 exports.calculateOrderBill = calculateOrderBill;
+exports.PAGE_PRICE = PAGE_PRICE

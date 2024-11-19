@@ -4,6 +4,10 @@ const { getCeilingNumber } = require("../utils/numberFormat");
 const crypto = require("crypto");
 const { generateUUIDV4 } = require("../utils/idManager");
 
+function getPagePrice(req, res) {
+    return res.send({ status: "success", data: { price: pageBoughtService.PAGE_PRICE } });
+}
+
 async function paymentResultHandler(req, res) {
     let { amount, resultCode, extraData, signature } = req.body;
     // console.log(req.body);
@@ -73,7 +77,6 @@ async function buyPagesHandler(req, res) {
         console.log("--------------------RAW SIGNATURE----------------");
         console.log(rawSignature);
         //signature
-        const crypto = require("crypto");
         var signature = crypto.createHmac("sha256", secretKey).update(rawSignature).digest("hex");
         console.log("--------------------SIGNATURE----------------");
         console.log(signature);
@@ -169,3 +172,4 @@ exports.viewPageBoughtHistory = viewPageBoughtHistory;
 exports.requestBuyPagesHandler = requestBuyPagesHandler;
 exports.updateOrderHandler = updateOrderHandler;
 exports.paymentResultHandler = paymentResultHandler;
+exports.getPagePrice = getPagePrice;

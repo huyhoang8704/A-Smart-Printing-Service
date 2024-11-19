@@ -9,8 +9,9 @@ router.post("/result/momo", pageBoughtHandler.paymentResultHandler);
 router.use(authenticateBearerToken);
 
 router.post("/buy/momo", pageBoughtHandler.buyPagesHandler);
-router.post("/buy", pageBoughtHandler.requestBuyPagesHandler);
-router.patch("/buy", pageBoughtHandler.updateOrderHandler);
+router.get("/price", pageBoughtHandler.getPagePrice);
+// router.post("/buy", pageBoughtHandler.requestBuyPagesHandler);
+// router.patch("/buy", pageBoughtHandler.updateOrderHandler);
 router.get("/history", pageBoughtHandler.viewPageBoughtHistory);
 
 module.exports = router;
