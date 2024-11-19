@@ -36,6 +36,9 @@ const User = sequelize.define('User',{
         type : DataTypes.STRING,
         allowNull : true
     },
+    lastSemPaperReceive: {
+        type : DataTypes.TEXT,
+    },
     deleted : {
         type : DataTypes.BOOLEAN,
         defaultValue : false,
@@ -46,6 +49,6 @@ const User = sequelize.define('User',{
     timestamps : true // createdAt, updatedAt
 })
 
-// User.sync({force: true})
+// User.sync({alter: true})
 
 module.exports = User

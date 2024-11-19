@@ -4,12 +4,13 @@ const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
 const { v4: uuidv4 } = require("uuid");
 const { getCurrentDefaultPageNum } = require("../services/systemConfigService");
-
+const systemConfService = require("../services/systemConfigService.js")
 const sendMail = require("../utils/sendMail.js");
 const { generateRandomPassword, getHashedPassword } = require("../utils/password.js");
 const { where } = require("sequelize");
 const userService = require("../services/userService.js");
 const { response } = require("express");
+const { SystemConfig } = require("../models/SystemConfig.js");
 dotenv.config();
 
 const COOKIE_OPTION = {
@@ -38,6 +39,7 @@ const register = async (req, res) => {
             fullName,
             email,
             numberPage: await getCurrentDefaultPageNum(),
+            rcvPaperThisSemester: true,
             uniId,
             password: hashedPassword,
             role: role || "student",
@@ -88,6 +90,20 @@ const login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(400).json({ message: "Sai mật khẩu." });
         }
+        
+        //TODO: check and issue default paper for user
+        try {
+            let currentConfig = await systemConfService.getCurrentSemesterConfig()
+            if(user.lastSemPaperReceive !== currentConfig.quarter)
+            {
+
+            }
+            
+        } catch (error) {
+            console.log("cannot set current semesterconfig");
+        }
+
+   
         // Create JWT token
         const token = jwt.sign(
             {

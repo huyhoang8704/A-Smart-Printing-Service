@@ -39,7 +39,7 @@ async function deletePermittedFileTypeHandler(req, res) {
 async function addPermittedFileTypeHandler(req, res) {
     try {
         const response = await systemConfigService.addPermittedFileType(req.params.id, req.body);
-        res.send(response);
+        res.status(201).send(response);
     } catch (error) {
         res.status(error.status).send({ status: "failed", error: error.message });
     }

@@ -20,6 +20,8 @@ async function getAllSystemConfigs() {
 
 async function getSystemConfig(id) {
     try {
+        console.log(id);
+        
         const response = await SystemConfig.findOne({
             where: {
                 id: id,
@@ -28,7 +30,6 @@ async function getSystemConfig(id) {
                 {
                     model: PermittedFileType,
                     as: "permittedFileTypes",
-                    required: true,
                 },
             ],
         });
@@ -42,8 +43,8 @@ async function getSystemConfig(id) {
 async function updateSystemConfig(id, data) {
     let { permittedFileTypes, defaultNoPages, renewDate } = data;
     console.log(data);
-
-    permittedFileTypes = JSON.parse(permittedFileTypes);
+    if(permittedFileTypes)
+        permittedFileTypes = JSON.parse(permittedFileTypes);
 
     const transaction = await sequelize.transaction();
     try {
@@ -100,17 +101,13 @@ async function addPermittedFileType(id, data) {
             return { status: "success", data: response };
         } catch (error) {
             console.log("myerror", error);
-            if(error.original.code === "ER_DUP_ENTRY")
-            {
+            if (error.original.code === "ER_DUP_ENTRY") {
                 let httpErr = createHttpError(409, "Duplicate entry");
                 throw httpErr;
-            }
-            else
-            {
+            } else {
                 let httpErr = createHttpError(500, error.message);
                 throw httpErr;
             }
-            
         }
     } else {
         let httpErr = createHttpError(400, `${fileType} is invalid`);
@@ -133,6 +130,7 @@ async function deletePermittedFileType(id, fileType) {
     }
 }
 
+// for current semester
 async function getPermittedFileTypes() {
     try {
         const systemConfig = await SystemConfig.findOne({
@@ -178,8 +176,28 @@ async function getCurrentDefaultPageNum() {
     return systemConfig?.defaultNoPages || 0;
 }
 
+async function getCurrentSemesterConfig() {
+    try {
+        const systemConfig = await SystemConfig.findOne({
+            where: {
+                [Op.and]: [
+                    { startDate: { [Op.lte]: new Date(Date.now()) } },
+                    { endDate: { [Op.gte]: new Date(Date.now()) } },
+                ],
+            },
+        });
+        return systemConfig;
+    } catch (error) {
+        throw error;
+    }
+}
+
 function getAllPossibleFileTypes() {
     return MIME_MAPPING;
+}
+
+async function getTotalDefaultPagesFromRangeOfSemester () {
+    
 }
 
 exports.getSystemConfig = getSystemConfig;
@@ -190,3 +208,4 @@ exports.getPermittedFileTypes = getPermittedFileTypes;
 exports.getAllPossibleFileTypes = getAllPossibleFileTypes;
 exports.getCurrentDefaultPageNum = getCurrentDefaultPageNum;
 exports.getAllSystemConfigs = getAllSystemConfigs;
+exports.getCurrentSemesterConfig = getCurrentSemesterConfig;
