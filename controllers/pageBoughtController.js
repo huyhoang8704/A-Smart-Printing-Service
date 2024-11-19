@@ -6,15 +6,21 @@ const { generateUUIDV4 } = require("../utils/idManager");
 
 async function paymentResultHandler(req, res) {
     let { amount, resultCode, extraData, signature } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     let decodedExtraData = decodeURIComponent(extraData);
-    decodedExtraData = JSON.parse(decodedExtraData)
-    console.log(decodedExtraData);
-    
+    decodedExtraData = JSON.parse(decodedExtraData);
+    // console.log(decodedExtraData);
 
-
-    // await pageBoughtService.addBuyPageHistory(req.)
-    res.status(204).send("");
+    //
+    try {
+        await pageBoughtService.addBuyPageHistory(decodedExtraData.userId, {
+            pageNum: decodedExtraData.pageNum,
+            amount: amount,
+        });
+        res.status(204).send("");
+    } catch (error) {
+        res.status(500).send({status: "failed", message: error.message});
+    }
 }
 
 async function buyPagesHandler(req, res) {
@@ -33,7 +39,7 @@ async function buyPagesHandler(req, res) {
         var requestId = orderId;
         var extraData = JSON.stringify({ userId: req.user.id, pageNum: pageNum });
         console.log();
-        
+
         // var paymentCode =
         //     "T8Qii53fAXyUftPV3m9ysyRhEanUs9KlOPfHgpMR0ON50U10Bh+vZdpJU7VY4z+Z2y77fJHkoDc69scwwzLuW5MzeUKTwPo3ZMaB29imm6YulqnWfTkgzqRaion+EuD7FN9wZ4aXE1+mRt0gHsU193y+yxtRgpmY7SDMU9hCKoQtYyHsfFR5FUAOAKMdw2fzQqpToei3rnaYvZuYaxolprm9+/+WIETnPUDlxCYOiw7vPeaaYQQH0BF0TxyU3zu36ODx980rJvPAgtJzH1gUrlxcSS1HQeQ9ZaVM1eOK/jl8KJm6ijOwErHGbgf/hVymUQG65rHU2MWz9U8QUjvDWA==";
         var orderGroupId = "";
@@ -99,10 +105,8 @@ async function buyPagesHandler(req, res) {
             console.log(error);
             res.send({ status: error, error });
         }
-    }
-    else
-    {
-        res.status(400).send({status: "failed", message: "pageNum is required"})
+    } else {
+        res.status(400).send({ status: "failed", message: "pageNum is required" });
     }
 }
 
