@@ -2,89 +2,107 @@ const { default: axios } = require("axios");
 const pageBoughtService = require("../services/pageBoughtService");
 const { getCeilingNumber } = require("../utils/numberFormat");
 const crypto = require("crypto");
+const { generateUUIDV4 } = require("../utils/idManager");
 
-async function result(req, res) {
-    console.log("this");
+async function paymentResultHandler(req, res) {
+    let { amount, resultCode, extraData, signature } = req.body;
     console.log(req.body);
-    res.status(204).send("OK bae");
+    let decodedExtraData = decodeURIComponent(extraData);
+    decodedExtraData = JSON.parse(decodedExtraData)
+    console.log(decodedExtraData);
+    
+
+
+    // await pageBoughtService.addBuyPageHistory(req.)
+    res.status(204).send("");
 }
 
 async function buyPagesHandler(req, res) {
-    var accessKey = "F8BBA842ECF85";
-    var secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
-    var orderInfo = "pay with MoMo";
-    var partnerCode = "MOMO";
-    var redirectUrl = "http://localhost:3001/page/result";
-    var ipnUrl = `${process.env.SERVER_URL}/page/result`;
-    var requestType = "payWithMethod";
-    var amount = "20000";
-    var orderId = partnerCode + new Date().getTime();
-    var requestId = orderId;
-    var extraData = "";
-    var paymentCode =
-        "T8Qii53fAXyUftPV3m9ysyRhEanUs9KlOPfHgpMR0ON50U10Bh+vZdpJU7VY4z+Z2y77fJHkoDc69scwwzLuW5MzeUKTwPo3ZMaB29imm6YulqnWfTkgzqRaion+EuD7FN9wZ4aXE1+mRt0gHsU193y+yxtRgpmY7SDMU9hCKoQtYyHsfFR5FUAOAKMdw2fzQqpToei3rnaYvZuYaxolprm9+/+WIETnPUDlxCYOiw7vPeaaYQQH0BF0TxyU3zu36ODx980rJvPAgtJzH1gUrlxcSS1HQeQ9ZaVM1eOK/jl8KJm6ijOwErHGbgf/hVymUQG65rHU2MWz9U8QUjvDWA==";
-    var orderGroupId = "";
-    var autoCapture = true;
-    var lang = "vi";
+    let { pageNum } = req.body;
+    if (pageNum) {
+        pageNum = parseInt(pageNum);
+        var accessKey = "F8BBA842ECF85";
+        var secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+        var orderInfo = "pay with MoMo";
+        var partnerCode = "MOMO";
+        var redirectUrl = "http://localhost:3001/page/result/momo";
+        var ipnUrl = `${process.env.SERVER_URL}/page/result/momo`;
+        var requestType = "payWithMethod";
+        var amount = String(pageBoughtService.calculateOrderBill(pageNum));
+        var orderId = generateUUIDV4();
+        var requestId = orderId;
+        var extraData = JSON.stringify({ userId: req.user.id, pageNum: pageNum });
+        console.log();
+        
+        // var paymentCode =
+        //     "T8Qii53fAXyUftPV3m9ysyRhEanUs9KlOPfHgpMR0ON50U10Bh+vZdpJU7VY4z+Z2y77fJHkoDc69scwwzLuW5MzeUKTwPo3ZMaB29imm6YulqnWfTkgzqRaion+EuD7FN9wZ4aXE1+mRt0gHsU193y+yxtRgpmY7SDMU9hCKoQtYyHsfFR5FUAOAKMdw2fzQqpToei3rnaYvZuYaxolprm9+/+WIETnPUDlxCYOiw7vPeaaYQQH0BF0TxyU3zu36ODx980rJvPAgtJzH1gUrlxcSS1HQeQ9ZaVM1eOK/jl8KJm6ijOwErHGbgf/hVymUQG65rHU2MWz9U8QUjvDWA==";
+        var orderGroupId = "";
+        var autoCapture = true;
+        var lang = "vi";
 
-    //before sign HMAC SHA256 with format
-    //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
-    var rawSignature =
-        "accessKey=" +
-        accessKey +
-        "&amount=" +
-        amount +
-        "&extraData=" +
-        extraData +
-        "&ipnUrl=" +
-        ipnUrl +
-        "&orderId=" +
-        orderId +
-        "&orderInfo=" +
-        orderInfo +
-        "&partnerCode=" +
-        partnerCode +
-        "&redirectUrl=" +
-        redirectUrl +
-        "&requestId=" +
-        requestId +
-        "&requestType=" +
-        requestType;
-    //puts raw signature
-    console.log("--------------------RAW SIGNATURE----------------");
-    console.log(rawSignature);
-    //signature
-    const crypto = require("crypto");
-    var signature = crypto.createHmac("sha256", secretKey).update(rawSignature).digest("hex");
-    console.log("--------------------SIGNATURE----------------");
-    console.log(signature);
+        //before sign HMAC SHA256 with format
+        //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
+        var rawSignature =
+            "accessKey=" +
+            accessKey +
+            "&amount=" +
+            amount +
+            "&extraData=" +
+            extraData +
+            "&ipnUrl=" +
+            ipnUrl +
+            "&orderId=" +
+            orderId +
+            "&orderInfo=" +
+            orderInfo +
+            "&partnerCode=" +
+            partnerCode +
+            "&redirectUrl=" +
+            redirectUrl +
+            "&requestId=" +
+            requestId +
+            "&requestType=" +
+            requestType;
+        //puts raw signature
+        console.log("--------------------RAW SIGNATURE----------------");
+        console.log(rawSignature);
+        //signature
+        const crypto = require("crypto");
+        var signature = crypto.createHmac("sha256", secretKey).update(rawSignature).digest("hex");
+        console.log("--------------------SIGNATURE----------------");
+        console.log(signature);
 
-    //json object send to MoMo endpoint
-    const requestBody = {
-        partnerCode: partnerCode,
-        partnerName: "Test",
-        storeId: "MomoTestStore",
-        requestId: requestId,
-        amount: amount,
-        orderId: orderId,
-        orderInfo: orderInfo,
-        redirectUrl: redirectUrl,
-        ipnUrl: ipnUrl,
-        lang: lang,
-        requestType: requestType,
-        autoCapture: autoCapture,
-        extraData: extraData,
-        orderGroupId: orderGroupId,
-        signature: signature,
-    };
-    try {
-        const response = await axios.post("https://test-payment.momo.vn/v2/gateway/api/create", requestBody);
-        const data = response.data;
-        console.log(data);
-        res.send(data);
-    } catch (error) {
-        console.log(error);
-        res.send({ status: error, error });
+        //json object send to MoMo endpoint
+        const requestBody = {
+            partnerCode: partnerCode,
+            partnerName: "Test",
+            storeId: "MomoTestStore",
+            requestId: requestId,
+            amount: amount,
+            orderId: orderId,
+            orderInfo: orderInfo,
+            redirectUrl: redirectUrl,
+            ipnUrl: ipnUrl,
+            lang: lang,
+            requestType: requestType,
+            autoCapture: autoCapture,
+            extraData: extraData,
+            orderGroupId: orderGroupId,
+            signature: signature,
+        };
+        try {
+            const response = await axios.post("https://test-payment.momo.vn/v2/gateway/api/create", requestBody);
+            const data = response.data;
+            console.log(data);
+            res.send(data);
+        } catch (error) {
+            console.log(error);
+            res.send({ status: error, error });
+        }
+    }
+    else
+    {
+        res.status(400).send({status: "failed", message: "pageNum is required"})
     }
 }
 
@@ -95,7 +113,7 @@ async function requestBuyPagesHandler(req, res) {
             let { pageNum } = req.body;
             pageNum = parseInt(pageNum);
             // create when user have already paid
-            const result = await pageBoughtService.requestBuyPage(userId, pageNum);
+            const result = await pageBoughtService.addBuyPageHistory(userId, pageNum);
             res.send({ status: "success", data: result });
         } catch (error) {
             console.log(error);
@@ -146,4 +164,4 @@ exports.buyPagesHandler = buyPagesHandler;
 exports.viewPageBoughtHistory = viewPageBoughtHistory;
 exports.requestBuyPagesHandler = requestBuyPagesHandler;
 exports.updateOrderHandler = updateOrderHandler;
-exports.result = result;
+exports.paymentResultHandler = paymentResultHandler;

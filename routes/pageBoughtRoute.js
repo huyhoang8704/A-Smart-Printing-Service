@@ -4,11 +4,11 @@ const pageBoughtHandler = require("../controllers/pageBoughtController");
 const { authenticateBearerToken } = require("../middlewares/authenticate.middleware");
 
 
-router.get("/result", pageBoughtHandler.result);
-router.post("/result", pageBoughtHandler.result);
+router.post("/result/momo", pageBoughtHandler.paymentResultHandler);
+// router.get("/result/momo", pageBoughtHandler.paymentResultHandler);
 router.use(authenticateBearerToken);
 
-router.post("/test-momo", pageBoughtHandler.buyPagesHandler);
+router.post("/buy/momo", pageBoughtHandler.buyPagesHandler);
 router.post("/buy", pageBoughtHandler.requestBuyPagesHandler);
 router.patch("/buy", pageBoughtHandler.updateOrderHandler);
 router.get("/history", pageBoughtHandler.viewPageBoughtHistory);

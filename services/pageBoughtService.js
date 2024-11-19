@@ -52,6 +52,29 @@ async function updatePageBoughtOrder(userId, data) {
     }
 }
 
+async function addBuyPageHistory(userId, data) {
+    let { pageNum, amount } = data;
+    pageNum = parseInt(pageNum);
+    amount = parseInt(amount);
+    try {
+        // const user = await getUserById(userId);
+        const history = await PaperBoughtHistory.create({
+            userId: userId,
+            id: generateUUIDV4(),
+            noOfPage: pageNum,
+            totalBill: amount,
+            status: "paid",
+        });
+        return {
+            boughtHistory: history,
+            // userInfo: { fullName: user.fullName, numberPage: user.numberPage, email: user.email },
+        };
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 async function requestBuyPage(userId, pageNum) {
     try {
         // const user = await getUserById(userId);
@@ -115,6 +138,12 @@ async function viewPageBoughtHistory(userId, date, limit, page) {
     }
 }
 
+function calculateOrderBill(numPage) {
+    return numPage * PAGE_PRICE;
+}
+
 exports.requestBuyPage = requestBuyPage;
 exports.viewPageBoughtHistory = viewPageBoughtHistory;
 exports.updatePageBoughtOrder = updatePageBoughtOrder;
+exports.addBuyPageHistory = addBuyPageHistory;
+exports.calculateOrderBill = calculateOrderBill;
