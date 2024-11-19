@@ -30,6 +30,6 @@ const PaperBoughtHistory = sequelize.define(
         tableName: "PaperBoughtHistories",
     }
 );
-// PaperBoughtHistory.sync({alter: true})
+PaperBoughtHistory.sync({alter: true})
 
 module.exports = { PaperBoughtHistory };

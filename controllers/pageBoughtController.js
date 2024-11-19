@@ -7,19 +7,19 @@ const { generateUUIDV4 } = require("../utils/idManager");
 async function paymentResultHandler(req, res) {
     let { amount, resultCode, extraData, signature } = req.body;
     // console.log(req.body);
-    let decodedExtraData = decodeURIComponent(extraData);
-    decodedExtraData = JSON.parse(decodedExtraData);
-    // console.log(decodedExtraData);
+    if (resultCode === 0) {
+        let decodedExtraData = decodeURIComponent(extraData);
+        decodedExtraData = JSON.parse(decodedExtraData);
 
-    //
-    try {
-        await pageBoughtService.addBuyPageHistory(decodedExtraData.userId, {
-            pageNum: decodedExtraData.pageNum,
-            amount: amount,
-        });
-        res.status(204).send("");
-    } catch (error) {
-        res.status(500).send({status: "failed", message: error.message});
+        try {
+            await pageBoughtService.addBuyPageHistory(decodedExtraData.userId, {
+                pageNum: decodedExtraData.pageNum,
+                amount: amount,
+            });
+            res.status(204).send("");
+        } catch (error) {
+            res.status(500).send({ status: "failed", message: error.message });
+        }
     }
 }
 
@@ -31,7 +31,7 @@ async function buyPagesHandler(req, res) {
         var secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
         var orderInfo = "pay with MoMo";
         var partnerCode = "MOMO";
-        var redirectUrl = "http://localhost:3001/page/result/momo";
+        var redirectUrl = process.env.REDIRECT_URL_AFTER_PAYMENT;
         var ipnUrl = `${process.env.SERVER_URL}/page/result/momo`;
         var requestType = "payWithMethod";
         var amount = String(pageBoughtService.calculateOrderBill(pageNum));
