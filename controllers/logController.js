@@ -1,5 +1,5 @@
 const logService = require("../services/logService");
-const Log = require("../models/PrintingLog");
+const {PrintingLog} = require("../models/PrintingLog");
 const { getCeilingNumber } = require("../utils/numberFormat");
 const { formatDateForDB, formatLocalTime } = require("../utils/dateFormat");
 class LogController {

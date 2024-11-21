@@ -14,7 +14,7 @@
 
 const sequelize = require("../config/mysql.database");
 const { File } = require("../models/File");
-const PrintingLog = require("../models/PrintingLog");
+const {PrintingLog} = require("../models/PrintingLog");
 const { SelectedPrintPage } = require("../models/SelectedPrintPage");
 const User = require("../models/User");
 const { formatDateTimeForDB } = require("../utils/dateFormat");
