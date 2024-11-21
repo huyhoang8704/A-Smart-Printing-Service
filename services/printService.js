@@ -27,7 +27,7 @@ function pagesCalculator(printPages, pageSize, printOption, noOfCopies) {
     if (pageSize === "A3") {
         if (printOption === "double-sided") {
             console.log("length", printPages.length);
-            
+
             return printPages.length * noOfCopies;
         } else {
             return printPages.length * 2 * noOfCopies;
@@ -51,6 +51,9 @@ async function printRequest(data, file) {
     }
     if (!file) {
         return { status: "failed", msg: "No file is selected" };
+    }
+    if (!printPages || printPages.length === 0) {
+        return { status: "failed", msg: "No pages are selected" };
     }
     printPages = JSON.parse(printPages); // parse array
     noOfCopies = parseInt(noOfCopies); // convert noOfCopies to Number

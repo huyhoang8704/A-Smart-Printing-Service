@@ -183,7 +183,7 @@ async function getCurrentSemesterConfig() {
                 [Op.and]: [
                     { startDate: { [Op.lte]: new Date(Date.now()) } },
                     { endDate: { [Op.gte]: new Date(Date.now()) } },
-                ],
+                ],  
             },
         });
         return systemConfig;
