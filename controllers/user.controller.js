@@ -32,12 +32,15 @@ const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create new user
+        let currentSemConfig = await systemConfService.getCurrentSemesterConfig();
+        console.log(currentSemConfig.quarter);
+
         const newUser = await User.create({
             id: uuidv4(), // Random ID
             fullName,
             email,
             numberPage: await getCurrentDefaultPageNum(),
-            rcvPaperThisSemester: true,
+            lastSemPaperReceive: currentSemConfig.quarter,
             uniId,
             password: hashedPassword,
             role: role || "student",

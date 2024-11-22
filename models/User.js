@@ -37,7 +37,7 @@ const User = sequelize.define('User',{
         allowNull : true
     },
     lastSemPaperReceive: {
-        type : DataTypes.TEXT,
+        type : DataTypes.STRING,
     },
     deleted : {
         type : DataTypes.BOOLEAN,

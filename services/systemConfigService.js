@@ -191,7 +191,6 @@ function getAllPossibleFileTypes() {
     return MIME_MAPPING;
 }
 
-async function getTotalDefaultPagesFromRangeOfSemester() {}
 
 exports.getSystemConfig = getSystemConfig;
 exports.updateSystemConfig = updateSystemConfig;
