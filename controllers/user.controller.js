@@ -4,13 +4,11 @@ const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
 const { v4: uuidv4 } = require("uuid");
 const { getCurrentDefaultPageNum } = require("../services/systemConfigService");
-const systemConfService = require("../services/systemConfigService.js")
+const systemConfService = require("../services/systemConfigService.js");
 const sendMail = require("../utils/sendMail.js");
 const { generateRandomPassword, getHashedPassword } = require("../utils/password.js");
-const { where } = require("sequelize");
 const userService = require("../services/userService.js");
-const { response } = require("express");
-const { SystemConfig } = require("../models/SystemConfig.js");
+const sequelize = require("../config/mysql.database.js");
 dotenv.config();
 
 const COOKIE_OPTION = {
@@ -90,20 +88,32 @@ const login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(400).json({ message: "Sai mật khẩu." });
         }
-        
-        //TODO: check and issue default paper for user
-        try {
-            let currentConfig = await systemConfService.getCurrentSemesterConfig()
-            if(user.lastSemPaperReceive !== currentConfig.quarter)
-            {
 
+        //TODO: check and issue default paper for user
+        const transaction = await sequelize.transaction();
+
+        try {
+            let currentConfig = await systemConfService.getCurrentSemesterConfig();
+            // if this user does not receive pages this semester, then issue it
+            if (user.lastSemPaperReceive !== currentConfig.quarter) {
+                await user.increment("numberPage", {
+                    by: await systemConfService.getCurrentDefaultPageNum(),
+                    transaction: transaction,
+                });
+
+                await user.update(
+                    { lastSemPaperReceive: currentConfig.quarter },
+                    {
+                        transaction: transaction,
+                    }
+                );
+                await transaction.commit();
             }
-            
         } catch (error) {
+            await transaction.rollback();
             console.log("cannot set current semesterconfig");
         }
 
-   
         // Create JWT token
         const token = jwt.sign(
             {
@@ -117,7 +127,7 @@ const login = async (req, res) => {
         user.token = token;
         await user.save();
         // Set cookie
-        res.cookie("token", token, COOKIE_OPTION);
+        // res.cookie("token", token, COOKIE_OPTION);
 
         res.status(200).json({
             message: "Đăng nhập thành công!",
@@ -205,7 +215,6 @@ const changePassword = async (req, res) => {
         const response = await userService.changeUserPassword(req.body);
         res.send(response);
     } catch (error) {
-
         res.status(error.status).send({ status: "failed", error: error.message });
     }
 };

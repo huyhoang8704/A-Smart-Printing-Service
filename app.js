@@ -21,7 +21,6 @@ var upload = multer();
 var printerRouter = require("./routes/printerRoute");
 var systemConfigRouter = require("./routes/systemConfigRoute");
 var userRouter = require("./routes/userRoute");
-var systemConfigRouter = require("./routes/systemConfigRoute");
 const reportRouter = require("./routes/reportRoute");
 var logRoute = require("./routes/logRoute");
 var SPSORouter = require("./routes/SPSORoute");
@@ -32,8 +31,8 @@ var app = express();
 upload.single("file");
 
 // view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
+// app.set("views", path.join(__dirname, "views"));
+// app.set("view engine", "jade");
 
 // app.use(upload.none()); // parse multipart/form-data
 app.use(upload.single("file"));
@@ -41,6 +40,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+// eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
     cors({

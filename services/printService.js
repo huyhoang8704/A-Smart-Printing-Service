@@ -12,9 +12,10 @@
  'application/pdf',
  */
 
+const createHttpError = require("http-errors");
 const sequelize = require("../config/mysql.database");
 const { File } = require("../models/File");
-const {PrintingLog} = require("../models/PrintingLog");
+const { PrintingLog } = require("../models/PrintingLog");
 const { SelectedPrintPage } = require("../models/SelectedPrintPage");
 const User = require("../models/User");
 const { formatDateTimeForDB } = require("../utils/dateFormat");
@@ -44,16 +45,16 @@ function pagesCalculator(printPages, pageSize, printOption, noOfCopies) {
 async function printRequest(data, file) {
     let { printerId, userId, noOfCopies, printPages, printOption = "double-sided", pageSize = "A4" } = data;
     if (!printerId) {
-        return { status: "failed", msg: "printerId is required" };
+        throw createHttpError(400, "printerId is required");
     }
     if (!userId) {
-        return { status: "failed", msg: "userId is required" };
+        throw createHttpError(400, "userId is required");
     }
     if (!file) {
-        return { status: "failed", msg: "No file is selected" };
+        throw createHttpError(400, "No file is selected");
     }
     if (!printPages || printPages.length === 0) {
-        return { status: "failed", msg: "No pages are selected" };
+        throw createHttpError(400, "No pages are selected");
     }
     printPages = JSON.parse(printPages); // parse array
     noOfCopies = parseInt(noOfCopies); // convert noOfCopies to Number
@@ -125,12 +126,13 @@ async function printRequest(data, file) {
             await transaction.commit();
             return { status: "success", msg: "Successfully" };
         } else {
-            return { status: "failed", msg: "User does not have enough pages" };
+            throw createHttpError(403, "User does not have enough pages");
         }
     } catch (error) {
         console.log(error);
+        if (error.status) throw error;
         await transaction.rollback();
-        return { status: "failed", error };
+        throw createHttpError(500, error.message);
     }
 }
 

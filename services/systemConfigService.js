@@ -21,7 +21,7 @@ async function getAllSystemConfigs() {
 async function getSystemConfig(id) {
     try {
         console.log(id);
-        
+
         const response = await SystemConfig.findOne({
             where: {
                 id: id,
@@ -43,8 +43,7 @@ async function getSystemConfig(id) {
 async function updateSystemConfig(id, data) {
     let { permittedFileTypes, defaultNoPages, renewDate } = data;
     console.log(data);
-    if(permittedFileTypes)
-        permittedFileTypes = JSON.parse(permittedFileTypes);
+    if (permittedFileTypes) permittedFileTypes = JSON.parse(permittedFileTypes);
 
     const transaction = await sequelize.transaction();
     try {
@@ -177,28 +176,22 @@ async function getCurrentDefaultPageNum() {
 }
 
 async function getCurrentSemesterConfig() {
-    try {
-        const systemConfig = await SystemConfig.findOne({
-            where: {
-                [Op.and]: [
-                    { startDate: { [Op.lte]: new Date(Date.now()) } },
-                    { endDate: { [Op.gte]: new Date(Date.now()) } },
-                ],  
-            },
-        });
-        return systemConfig;
-    } catch (error) {
-        throw error;
-    }
+    const systemConfig = await SystemConfig.findOne({
+        where: {
+            [Op.and]: [
+                { startDate: { [Op.lte]: new Date(Date.now()) } },
+                { endDate: { [Op.gte]: new Date(Date.now()) } },
+            ],
+        },
+    });
+    return systemConfig;
 }
 
 function getAllPossibleFileTypes() {
     return MIME_MAPPING;
 }
 
-async function getTotalDefaultPagesFromRangeOfSemester () {
-    
-}
+async function getTotalDefaultPagesFromRangeOfSemester() {}
 
 exports.getSystemConfig = getSystemConfig;
 exports.updateSystemConfig = updateSystemConfig;
