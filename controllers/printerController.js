@@ -1,4 +1,3 @@
-const { Printer } = require("../models/Printer");
 const printerService = require("../services/printerService");
 async function getAllPrintersHandler(req, res) {
     const response = await printerService.getAllPrinters();

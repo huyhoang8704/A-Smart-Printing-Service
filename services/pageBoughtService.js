@@ -4,8 +4,9 @@ const { PaperBoughtHistory } = require("../models/PaperBoughtHistory");
 const User = require("../models/User");
 const { generateUUIDV4 } = require("../utils/idManager");
 const { formatDateForDB } = require("../utils/dateFormat");
+const userService = require("./userService");
 
- const PAGE_PRICE = 1000;
+const PAGE_PRICE = 1000;
 
 async function updatePageBoughtOrder(userId, data) {
     let { status, orderId } = data;
@@ -56,21 +57,34 @@ async function addBuyPageHistory(userId, data) {
     let { pageNum, amount } = data;
     pageNum = parseInt(pageNum);
     amount = parseInt(amount);
+    const transaction = await sequelize.transaction();
     try {
         // const user = await getUserById(userId);
-        const history = await PaperBoughtHistory.create({
-            userId: userId,
-            id: generateUUIDV4(),
-            noOfPage: pageNum,
-            totalBill: amount,
-            status: "paid",
-        });
+        const user = await userService.getUserById(userId);
+        await user.increment("numberPage", { by: pageNum, transaction: transaction }); // increment page for user
+
+        // create page bought history
+        const history = await PaperBoughtHistory.create(
+            {
+                userId: userId,
+                id: generateUUIDV4(),
+                noOfPage: pageNum,
+                totalBill: amount,
+                status: "paid",
+            },
+            {
+                transaction: transaction,
+            }
+        );
+
+        await transaction.commit();
         return {
             boughtHistory: history,
             // userInfo: { fullName: user.fullName, numberPage: user.numberPage, email: user.email },
         };
     } catch (error) {
         console.log(error);
+        await transaction.rollback();
         throw error;
     }
 }
@@ -147,4 +161,4 @@ exports.viewPageBoughtHistory = viewPageBoughtHistory;
 exports.updatePageBoughtOrder = updatePageBoughtOrder;
 exports.addBuyPageHistory = addBuyPageHistory;
 exports.calculateOrderBill = calculateOrderBill;
-exports.PAGE_PRICE = PAGE_PRICE
+exports.PAGE_PRICE = PAGE_PRICE;
