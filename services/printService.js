@@ -82,7 +82,7 @@ async function printRequest(data, file) {
                 {
                     // create new file
                     id: generateUUIDV4(),
-                    fileName: file.originalname,
+                    fileName: decodeURIComponent(file.originalname),
                     fileType: file.mimetype,
                     noOfPages: 100,
                     userId: userId,
