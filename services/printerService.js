@@ -33,6 +33,7 @@ async function getAllPrinters(query) {
 }
 
 async function getPrinterByBuilding(building) {
+    
     const printers = await Printer.findAll({
         where: {
             building: {

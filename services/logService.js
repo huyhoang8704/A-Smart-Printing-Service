@@ -94,7 +94,7 @@ class LogService {
     }
 
     async countAllLogs(date, uniId, building) {
-        let condition = {};
+        var condition = {};
         if (date)
             condition = Sequelize.where(
                 Sequelize.fn("DATE", Sequelize.col("startTime")),
@@ -108,14 +108,16 @@ class LogService {
             };
         }
         await this._addConditionPrinterByBuilding(condition, building);
-
+        
         return await PrintingLog.count({
             where: condition,
         });
     }
 
     async getAllLogs(date, limit, page, uniId, building) {
-        let condition = {};
+        console.log(uniId, building);
+        
+        var condition = {};
         if (date) {
             condition.startTime = Sequelize.where(
                 Sequelize.fn("DATE", Sequelize.col("startTime")),
@@ -131,7 +133,9 @@ class LogService {
         }
         // filter by building
 
-        this._addConditionPrinterByBuilding(condition, building);
+        await this._addConditionPrinterByBuilding(condition, building);
+        console.log("condition", condition);
+
         return await PrintingLog.findAll({
             where: condition,
             limit: limit,
