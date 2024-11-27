@@ -1,12 +1,12 @@
 const { getUser } = require("../controllers/user.controller");
-const {PrintingLog} = require("../models/PrintingLog");
+const { PrintingLog } = require("../models/PrintingLog");
 const { Op, and, fn, col, Sequelize, where } = require("sequelize");
 const User = require("../models/User");
 const { formatDateForDB } = require("../utils/dateFormat");
 const { File } = require("../models/File");
 const { Printer } = require("../models/Printer");
+const userService = require("./userService");
 class LogService {
-
     async getLogById(id) {
         return await PrintingLog.findByPk(id);
     }
@@ -22,6 +22,7 @@ class LogService {
 
     async getLogByUserId(userId, date, page, limit) {
         console.log("getLogByStudentUserName log for student:", userId);
+
         let condition = {
             userId: userId,
         };
@@ -87,25 +88,35 @@ class LogService {
         return await PrintingLog.count({ where: { userId: userId } });
     }
 
-    async countAllLogs(date) {
+    async countAllLogs(date, uniId) {
         let condition = {};
         if (date)
             condition = Sequelize.where(
                 Sequelize.fn("DATE", Sequelize.col("startTime")),
                 formatDateForDB(new Date(date))
             );
+        if (uniId) {
+            const user = await userService.getUserByUniId(uniId);
+            if (!user) return 0;
+            condition.userId = user.id;
+        }
         return await PrintingLog.count({
             where: condition,
         });
     }
 
-    async getAllLogs(date, limit, page) {
+    async getAllLogs(date, limit, page, uniId) {
         let condition = {};
         if (date) {
-            condition = Sequelize.where(
+            condition.startTime = Sequelize.where(
                 Sequelize.fn("DATE", Sequelize.col("startTime")),
                 formatDateForDB(new Date(date))
             );
+        }
+        if (uniId) {
+            const user = await userService.getUserByUniId(uniId);
+            if (!user) return [];
+            condition.userId = user.id;
         }
         return await PrintingLog.findAll({
             where: condition,

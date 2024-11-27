@@ -17,6 +17,10 @@ class UserService {
         return await User.findOne({ where: { name } });
     }
 
+    async getUserByUniId(uniId) {
+        return await User.findOne({ where: { uniId: uniId } });
+    }
+
     async updateUser(id, updates) {
         const user = await User.findByPk(id);
         if (!user) {

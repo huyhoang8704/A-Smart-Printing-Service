@@ -69,12 +69,12 @@ class LogController {
 
     // For SPSO
     async getAllLogs(req, res) {
-        let { date, limit = 20, page = 1 } = req.query;
+        let { date, limit = 20, page = 1, uniId} = req.query;
         limit = parseInt(limit);
         page = parseInt(page);
         try {
-            const logs = await logService.getAllLogs(date, limit, page);
-            const total = await logService.countAllLogs(date);
+            const logs = await logService.getAllLogs(date, limit, page, uniId);
+            const total = await logService.countAllLogs(date, uniId);
             res.send({ status: "success", total, page, maxPage: getCeilingNumber(total / limit), limit, data: logs });
         } catch (error) {
             console.log(error);
