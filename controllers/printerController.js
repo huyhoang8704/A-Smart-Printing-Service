@@ -1,6 +1,6 @@
 const printerService = require("../services/printerService");
 async function getAllPrintersHandler(req, res) {
-    const response = await printerService.getAllPrinters();
+    const response = await printerService.getAllPrinters(req.query);
     res.send(response);
 }
 

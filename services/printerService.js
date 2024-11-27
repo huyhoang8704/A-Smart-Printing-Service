@@ -1,16 +1,46 @@
-const { where } = require("sequelize");
+const {  Op } = require("sequelize");
 const { Printer } = require("../models/Printer");
 const { generateUUIDV4 } = require("../utils/idManager");
 
-async function getAllPrinters() {
+function _addConditionPrinterByBuilding(condition, building) {
+    if (building) {
+        condition.building = { [Op.like]: `%${building}%` };
+    }
+}
+
+function _addConditionPrinterByModel(condition, model) {
+    if (model) {
+        condition.model = { [Op.like]: `%${model}%` };
+    }
+}
+
+async function getAllPrinters(query) {
+    let { building, model } = query;
     try {
-        const printers = await Printer.findAll();
+        let condition = {};
+        _addConditionPrinterByBuilding(condition, building);
+        _addConditionPrinterByModel(condition, model);
+
+        const printers = await Printer.findAll({
+            where: condition,
+        });
         console.log(printers);
         return { status: "success", data: printers };
     } catch (error) {
         console.log(error);
         return { status: "failed", error: [] };
     }
+}
+
+async function getPrinterByBuilding(building) {
+    const printers = await Printer.findAll({
+        where: {
+            building: {
+                [Op.like]: `%${building}%`,
+            },
+        },
+    });
+    return printers;
 }
 
 async function getPrinterByID(id) {
@@ -46,7 +76,7 @@ async function updatePrinter(id, data) {
 }
 
 async function addPrinter(data) {
-    const { model, manufacturer, type, description, room, building } = data;
+    const { model, manufacturer, type, description, room, building, status = "available" } = data;
     try {
         const response = await Printer.create({
             id: generateUUIDV4(),
@@ -56,6 +86,7 @@ async function addPrinter(data) {
             type: type,
             room: room,
             description: description,
+            status: status,
         });
         return { status: "success", data: response };
     } catch (error) {
@@ -68,3 +99,4 @@ exports.getAllPrinters = getAllPrinters;
 exports.updatePrinter = updatePrinter;
 exports.addPrinter = addPrinter;
 exports.getPrinterByID = getPrinterByID;
+exports.getPrinterByBuilding = getPrinterByBuilding;

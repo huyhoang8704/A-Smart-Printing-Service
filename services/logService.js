@@ -6,17 +6,22 @@ const { formatDateForDB } = require("../utils/dateFormat");
 const { File } = require("../models/File");
 const { Printer } = require("../models/Printer");
 const userService = require("./userService");
+const { getPrinterByBuilding } = require("./printerService");
 class LogService {
     async getLogById(id) {
         return await PrintingLog.findByPk(id);
     }
 
     async getPrintedFile(fileId) {
-        try {
-            const file = await File.findByPk(fileId);
-            return file;
-        } catch (error) {
-            throw error;
+        const file = await File.findByPk(fileId);
+        return file;
+    }
+
+    async _addConditionPrinterByBuilding(condition, building) {
+        if (building) {
+            const printers = await getPrinterByBuilding(building); // get all printers in chosen building
+            const printerIds = printers.map((printer) => printer.id);
+            condition.printerId = { [Op.in]: printerIds };
         }
     }
 
@@ -88,7 +93,7 @@ class LogService {
         return await PrintingLog.count({ where: { userId: userId } });
     }
 
-    async countAllLogs(date, uniId) {
+    async countAllLogs(date, uniId, building) {
         let condition = {};
         if (date)
             condition = Sequelize.where(
@@ -100,12 +105,14 @@ class LogService {
             if (!user) return 0;
             condition.userId = user.id;
         }
+        await this._addConditionPrinterByBuilding(condition, building);
+
         return await PrintingLog.count({
             where: condition,
         });
     }
 
-    async getAllLogs(date, limit, page, uniId) {
+    async getAllLogs(date, limit, page, uniId, building) {
         let condition = {};
         if (date) {
             condition.startTime = Sequelize.where(
@@ -114,10 +121,13 @@ class LogService {
             );
         }
         if (uniId) {
-            const user = await userService.getUserByUniId(uniId);
+            const user = await userService.getUserByUniId(uniId); // get user by uniID
             if (!user) return [];
             condition.userId = user.id;
         }
+        // filter by building
+
+        this._addConditionPrinterByBuilding(condition, building);
         return await PrintingLog.findAll({
             where: condition,
             limit: limit,
