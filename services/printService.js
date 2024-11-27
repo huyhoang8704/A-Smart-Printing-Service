@@ -21,7 +21,8 @@ const User = require("../models/User");
 const { formatDateTimeForDB } = require("../utils/dateFormat");
 const { generateUUIDV4 } = require("../utils/idManager");
 const userService = require("./userService");
-
+const { default: axios } = require("axios");
+require("dotenv").config();
 // [1,2] double sided
 
 function pagesCalculator(printPages, pageSize, printOption, noOfCopies) {
@@ -92,10 +93,11 @@ async function printRequest(data, file) {
                 }
             );
             // console.log("newFileID", newFile.id);
+            let logId = generateUUIDV4();
             const newLog = await PrintingLog.create(
                 {
                     // create new log
-                    id: generateUUIDV4(),
+                    id: logId,
                     userId,
                     fileId: newFile.id,
                     printerId,
@@ -124,6 +126,14 @@ async function printRequest(data, file) {
             );
 
             await transaction.commit();
+
+            // mock up update print log
+            setTimeout(async () => {
+                const body = {
+                    action: "finish",
+                };
+                await axios.patch(`${process.env.SERVER_URL}/logs/${logId}`, body);
+            }, pages * 1000);
             return { status: "success", msg: "Successfully" };
         } else {
             throw createHttpError(403, "User does not have enough pages");

@@ -5,5 +5,4 @@ const router = express.Router()
 
 router.post("/", authenticateBearerToken, printController.printHandler)
 
-
 module.exports = router

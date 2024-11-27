@@ -1,5 +1,5 @@
 const logService = require("../services/logService");
-const {PrintingLog} = require("../models/PrintingLog");
+const { PrintingLog } = require("../models/PrintingLog");
 const { getCeilingNumber } = require("../utils/numberFormat");
 const { formatDateForDB, formatLocalTime } = require("../utils/dateFormat");
 class LogController {
@@ -69,7 +69,7 @@ class LogController {
 
     // For SPSO
     async getAllLogs(req, res) {
-        let { date, limit = 20, page = 1, uniId, building} = req.query;
+        let { date, limit = 20, page = 1, uniId, building } = req.query;
         limit = parseInt(limit);
         page = parseInt(page);
         try {
@@ -111,19 +111,21 @@ class LogController {
 
     async updateLog(req, res) {
         const { id } = req.params;
-        const { finishTime } = req.body;
+        const { action } = req.body;
+        if (action === "finish") {
+            try {
+                let finishTime = new Date(Date.now());
+                const updatedLog = await logService.updateLog(id, finishTime);
+                res.status(200).json({ status: "success", data: updatedLog });
+            } catch (error) {
+                console.error("Update error:", error);
 
-        try {
-            const updatedLog = await logService.updateLog(id, finishTime);
-            res.status(200).json({ status: "success", data: updatedLog });
-        } catch (error) {
-            console.error("Update error:", error);
+                if (error.message === "Log not found") {
+                    return res.status(404).json({ error: error.message });
+                }
 
-            if (error.message === "Log not found") {
-                return res.status(404).json({ error: error.message });
+                res.status(500).json({ status: "failed", error: error.message });
             }
-
-            res.status(500).json({ status: "failed", error: error.message });
         }
     }
 }
