@@ -101,9 +101,11 @@ class LogService {
                 formatDateForDB(new Date(date))
             );
         if (uniId) {
-            const user = await userService.getUserByUniId(uniId);
-            if (!user) return 0;
-            condition.userId = user.id;
+            const users = await userService.getUsersByUniIdRegex(uniId); // get user by uniID
+            const usersIds = users.map((user) => user.id);
+            condition.userId = {
+                [Op.in]: usersIds,
+            };
         }
         await this._addConditionPrinterByBuilding(condition, building);
 
@@ -121,9 +123,11 @@ class LogService {
             );
         }
         if (uniId) {
-            const user = await userService.getUserByUniId(uniId); // get user by uniID
-            if (!user) return [];
-            condition.userId = user.id;
+            const users = await userService.getUsersByUniIdRegex(uniId); // get user by uniID
+            const usersIds = users.map((user) => user.id);
+            condition.userId = {
+                [Op.in]: usersIds,
+            };
         }
         // filter by building
 

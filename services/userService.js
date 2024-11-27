@@ -3,6 +3,7 @@ const User = require("../models/User");
 var createError = require("http-errors");
 const bcrypt = require("bcryptjs");
 const { getHashedPassword } = require("../utils/password");
+const { Op } = require("sequelize");
 class UserService {
     async createUser(username, password, name) {
         console.log("Creating user");
@@ -19,6 +20,10 @@ class UserService {
 
     async getUserByUniId(uniId) {
         return await User.findOne({ where: { uniId: uniId } });
+    }
+
+    async getUsersByUniIdRegex(regex) {
+        return await User.findAll({ where: { uniId: { [Op.like]: `%${regex}%` } } });
     }
 
     async updateUser(id, updates) {
