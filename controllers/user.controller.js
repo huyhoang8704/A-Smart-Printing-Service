@@ -53,7 +53,7 @@ const register = async (req, res) => {
                 fullName: newUser.fullName,
             },
             process.env.JWT_SECRET,
-            { expiresIn: "1m" }
+            { expiresIn: "1d" }
         );
 
         // Save MySQL
@@ -124,7 +124,7 @@ const login = async (req, res) => {
                 fullName: user.fullName,
             },
             process.env.JWT_SECRET,
-            { expiresIn: "1m" }
+            { expiresIn: "1d" }
         );
         // Save JWT token
         user.token = token;
