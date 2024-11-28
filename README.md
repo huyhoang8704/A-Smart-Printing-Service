@@ -3,7 +3,7 @@
 ## Cách chạy chương trình
 
 -   Phải cài đặt trước và kết nối được mysql, nodejs, npm
--   tạo 1 database trong mysql, bỏ các username, password,.. trong file .env
+-   tạo 1 database trong mysql, bỏ các username, password,... trong file .env
 -   `npm i`
 -   `npm start`
 
