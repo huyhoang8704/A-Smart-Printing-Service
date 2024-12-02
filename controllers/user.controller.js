@@ -175,9 +175,9 @@ const logout = (req, res) => {
 
 const forgetPassword = async (req, res) => {
     if (!req.body.email) {
-        res.json({
-            code: "error",
-            msg: "Vui lòng điền email của bạn.",
+        res.status(400).json({
+            status: "failed",
+            message: "Vui lòng điền email của bạn.",
         });
         return;
     }
@@ -186,9 +186,9 @@ const forgetPassword = async (req, res) => {
         const user = await User.findOne({ where: { email: req.body.email } });
 
         if (!user) {
-            res.json({
-                code: "error",
-                msg: "Email không tồn tại.",
+            res.status(400).json({
+                status: "failed",
+                message: "Email không tồn tại.",
             });
             return;
         }
@@ -201,14 +201,14 @@ const forgetPassword = async (req, res) => {
         await sendMail(req.body.email, subject, text);
 
         res.json({
-            code: "success",
-            msg: "Đã gửi mật khẩu thành công",
+            status: "success",
+            message: "Đã gửi mật khẩu thành công",
         });
     } catch (error) {
         console.error("Error:", error);
-        res.json({
-            code: "error",
-            msg: "Có lỗi xảy ra, vui lòng thử lại sau.",
+        res.status(500).json({
+            status: "failed",
+            message: "Có lỗi xảy ra, vui lòng thử lại sau.",
         });
     }
 };

@@ -1,7 +1,7 @@
 console.log("asssociation");
 
 const { PermittedFileType } = require("./PermittedFileType");
-const {PrintingLog} = require("./PrintingLog");
+const { PrintingLog } = require("./PrintingLog");
 const { SelectedPrintPage } = require("./SelectedPrintPage");
 const { SystemConfig } = require("./SystemConfig");
 const { File } = require("./File");
@@ -19,19 +19,22 @@ SystemConfig.hasMany(PermittedFileType, {
 
 PrintingLog.hasMany(SelectedPrintPage, {
     foreignKey: "printLogId",
+    onDelete: "CASCADE",
 });
 
 PrintingLog.belongsTo(File, {
-    foreignKey: "fileId"
-})
+    foreignKey: "fileId",
+    onDelete: "CASCADE",
+});
 
 PrintingLog.belongsTo(User, {
-    foreignKey: "userId"
-})
+    foreignKey: "userId",
+});
 
 PrintingLog.belongsTo(Printer, {
-    foreignKey: 'printerId'
-})
+    foreignKey: "printerId",
+    onDelete: "CASCADE",
+});
 
 // PermittedFileType.belongsTo(SystemConfig, {
 //     foreignKey: "configId",
