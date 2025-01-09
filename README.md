@@ -1,35 +1,47 @@
-# expressjs-mvc
+# Printing Service
 
-## Cách chạy chương trình
+## Giới thiệu
 
--   Phải cài đặt trước và kết nối được mysql, nodejs, npm
--   tạo 1 database trong mysql, bỏ các username, password,... trong file .env
--   `npm i`
--   `npm start`
+Đây là một dự án dịch vụ in ấn được xây dựng bằng Node.js và Express.js theo mô hình MVC (Model-View-Controller). Dự án này bao gồm các chức năng quản lý người dùng, quản lý máy in, quản lý lịch sử in ấn, mua trang in, và các báo cáo thống kê.
 
-## Cấu trúc folder
+## Các công nghệ sử dụng
 
-Tuân theo cấu trúc Model - View - Controller, trong đó View thuộc về phía frontend, backend chỉ quan tâm model và controller
+-   Node.js
+-   Express.js
+-   Sequelize (ORM cho MySQL)
+-   JWT (JSON Web Token) cho xác thực
+-   bcrypt.js cho mã hóa mật khẩu
+-   Multer cho xử lý file upload
+-   Nodemailer cho gửi email
 
-###  và app.js
 
-app.js là điểm bắt đầu của chương trình, dùng để config các middlewares và định nghĩa routes. 
-### Routes
+## Hướng dẫn cài đặt
 
-Định nghĩa các endpoints cho chương trình và map các endpoints với các controllers.
+1. Clone repository về máy:
+    ```sh
+    git clone https://github.com/huyhoang8704/A-Smart-Printing-Service.git
+    ```
+2. Cài đặt các dependencies:
+    ```sh
+    npm install
+    ```
+3. Tạo file `.env` và cấu hình các thông tin kết nối database:
+    ```env
+    MYSQL_PORT=3306
+    MYSQL_USERNAME=<your-username>
+    MYSQL_PASSWORD=<your-password>
+    MYSQL_DATABASE=<your-database>
+    MYSQL_HOST=<your-host>
+    PORT=3000
+    JWT_SECRET=<your-jwt-secret>
+    ```
+4. Khởi động server:
+    ```sh
+    npm start
+    ```
 
-### Controllers
+## Liên hệ
 
-Xử lý Request được gửi tới, bao gồm nhưng không giới hạn việc validate Request và gọi các service liên quan. Đây là một chương trình monolith nên gọi service nào cũng được.
+Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua email: [huyhoang8704@gmail.com](mailto:huyhoang8704@gmail.com).
 
-### Services
-
-Xử lý các bussiness logic, lớp này là không bắt buộc trong mô hình MVC, tuy nhiên khi chương trình ngày càng mở rộng thì việc tách lớp là cần thiết để kiểm soát code.
-
-### Models
-
-Định nghĩa kiểu dữ liệu, và được dùng để tương tác với databases.
-
-### Middlewares
-
-Là các hàm được thực thi trong 1 vòng lặp request - response, sử dụng phổ biến ở lớp application (app.js), lớp routes(authenticate and authorize,...), lớp controllers (validate,.. tuy nhiên trong trường hợp này ta dùng models để validate).
+---
