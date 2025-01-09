@@ -40,6 +40,22 @@
     npm start
     ```
 
+## Relevant resources
+Backend: https://cnpm-40sj.onrender.com/
+
+FrontEnd: https://project-software-smart-print.vercel.app/
+
+Report: https://drive.google.com/file/d/15pqGQMr1vGxihEDvJGRg_ViVYReZKrL0/view?usp=drive_link
+
+# Tài khoản Admin (SPSO) để sử dụng
++ Tên đăng nhập: SPSO 1
++ Mật khẩu: 123456
+# Tài khoản user để sử dụng
++ Tên đăng nhập: thai.nguyen0710@hcmut.edu.vn
++ Mật khẩu: 123456
++ (hoặc dùng tài khoản @hcmut.edu.vn để tạo tài khoản)
+
+
 ## Liên hệ
 
 Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua email: [huyhoang8704@gmail.com](mailto:huyhoang8704@gmail.com).
